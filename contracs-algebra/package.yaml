@@ -22,12 +22,26 @@ description:         Please see the README on GitHub at <https://github.com/phil
 dependencies:
   - base >= 4.7 && < 5
   - template-haskell
-  - base
   - generic-random
   - open-games-hs
   - probability
   - splitmix
   - mwc-random
+  - mtl
+  - transformers
+  - poly
+  - profunctors
+  - parsec
+  - comonad
+  - extra
+  - fgl
+  - graphviz
+  - lens
+  - typed-process
+  - criterion
+  - random
+
+
 
 library:
   source-dirs: src
