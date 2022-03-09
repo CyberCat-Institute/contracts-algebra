@@ -13,7 +13,7 @@
 
 module SubcontractingEquilibrium where
 
-import           Examples.Contracts.Subcontracting
+import           Contracts.Subcontracting
 import           Engine.Engine
 
 import           GHC.Generics

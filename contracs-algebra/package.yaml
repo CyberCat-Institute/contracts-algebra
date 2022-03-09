@@ -62,18 +62,18 @@ executables:
 
 tests:
   contracs-algebra-test:
-    main:                SubcontractingEquilibrium.hs
+    buildable: True
+    main:                SubcontractingEquilibrium
     source-dirs:         test
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - contracs-algebra
-    - template-haskell
-    - base
-    - hspec
-    - QuickCheck
-    - generic-random
+      - contracs-algebra
+      - template-haskell
+      - base
+      - hspec
+      - QuickCheck
+      - generic-random
 
 
