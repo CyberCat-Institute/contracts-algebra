@@ -1,6 +1,6 @@
-name:                contracs-algebra
+name:                contracts-open-games
 version:             0.1.0.0
-github:              "philipp-zahn/contracs-algebra"
+github:              "philipp-zahn/contracts-open-games"
 license:             BSD3
 author:              "Philipp Zahn"
 maintainer:          "philipp.zahn@protonmail.com"
@@ -50,7 +50,7 @@ library:
 
 
 executables:
-  contracs-algebra-exe:
+  contracts-open-games-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -58,10 +58,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - contracs-algebra
+    - contracts-open-games
 
 tests:
-  contracs-algebra-test:
+  equilibrium-test:
     buildable: True
     main:                SubcontractingEquilibrium
     source-dirs:         test
@@ -69,7 +69,7 @@ tests:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - contracs-algebra
+      - contracts-open-games 
       - template-haskell
       - base
       - hspec
