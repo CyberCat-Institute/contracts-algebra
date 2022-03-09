@@ -8,8 +8,8 @@
 
 module Contracts.Payments where
 
---import Engine.Engine
---import Preprocessor.Preprocessor
+import Engine.Engine
+import Preprocessor.Preprocessor
 
 -- Payment clauses
 
