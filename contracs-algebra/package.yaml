@@ -1,0 +1,65 @@
+name:                contracs-algebra
+version:             0.1.0.0
+github:              "philipp-zahn/contracs-algebra"
+license:             BSD3
+author:              "Philipp Zahn"
+maintainer:          "philipp.zahn@protonmail.com"
+copyright:           "Philipp Zahn"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/philipp-zahn/contracs-algebra#readme>
+
+dependencies:
+  - base >= 4.7 && < 5
+  - template-haskell
+  - base
+  - generic-random
+  - open-games-hs
+  - probability
+  - splitmix
+  - mwc-random
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Contracts.Subcontracting
+
+
+executables:
+  contracs-algebra-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - contracs-algebra
+
+tests:
+  contracs-algebra-test:
+    main:                SubcontractingEquilibrium.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - contracs-algebra
+    - template-haskell
+    - base
+    - hspec
+    - QuickCheck
+    - generic-random
+
+
