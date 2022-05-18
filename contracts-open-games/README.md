@@ -1,5 +1,5 @@
 # Introduction
 
-This repo contains examples of contract clauses represented and analyzed through the compositional game theory framework. 
+This repo contains examples of contract clauses represented and analyzed the [open-games-engine](https://github.com/philipp-zahn/open-games-hs). 
 
 
