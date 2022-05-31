@@ -163,3 +163,6 @@ TSWLatexianTemp*
 
 # stack work
 /.stack-work
+
+# emacs
+*.~undo-tree~
