@@ -12,6 +12,8 @@ import Engine.Engine
 import Preprocessor.Preprocessor
 
 -- Payment clauses
+-- This module describes a game where expenses are charged by different parties
+-- It also describes a simple module which determines punishment in case of late payments
 
 
 ---------------
@@ -31,7 +33,15 @@ data Parameter = Parameter
    , highExpenses :: Double
    }
 
+type Price = Double
+
+type Days  = Int
+
+type Interest = Double
+
 parameters = Parameter 1 8 10 0.7 0.2 4 10
+
+
 
 ------------
 -- 1 Payoffs
@@ -56,9 +66,55 @@ expensesDistribution lowExpenses highExpenses p = distFromList [(lowExpenses,p),
 
 -- non decision
 nonDecision = [1]
+
+-- Payment interest
+paymentLate :: Interest -> Price -> Days -> Price
+paymentLate interest price delayedDays =
+  price*interest* (fromIntegral delayedDays) 
+
+
+
 --------------------
--- 3 Building Blocks
+-- 3 Payment clauses
 --------------------
+-- | Payment module in case of late payments
+paymentSettlement seller buyer interestRate = [opengame|
+
+    inputs    : price, daysLate ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : price, daysLate ;
+    feedback  : ;
+    operation : forwardFunction $ uncurry $ paymentLate interestRate;
+    outputs   : penalty ;
+    returns   : ;
+
+
+    inputs    : penalty;
+    feedback  : ;
+    operation : addPayoffs seller ;
+    outputs   :  ;
+    returns   : ;
+
+
+    inputs    : -penalty ;
+    feedback  : ;
+    operation : addPayoffs buyer ;
+    outputs   :  ;
+    returns   :  ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+|]
+
+
+-------------------
+-- 4 Expense models
+-------------------
 
 -- | Expenses are generated depending on exogenous parameters and the level of diligence exercised
 expenseFunction p delta lowExpenses highExpenses = [opengame|
@@ -174,8 +230,9 @@ clientPayment par = [opengame|
 |]
 
 
+
 --------------------
--- 4 Strategies
+-- 5 Strategies
 --------------------
 
 strategyLowDiligence, strategyHighDiligence :: List '[Kleisli Stochastic () Diligence, Kleisli Stochastic Double Integer]
