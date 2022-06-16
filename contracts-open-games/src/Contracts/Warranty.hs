@@ -19,7 +19,7 @@ import Preprocessor.Preprocessor
 -- 0 Data types
 ---------------
 
-data Warranty = AsIs | LimitedWarranty | FullWaranty
+data Warranty = AsIs | LimitedWarranty | FullWarranty
   deriving (Show,Eq,Ord)
 
 
@@ -36,7 +36,7 @@ warrantyCosts seller buyer warrantyCostFunction= [opengame|
 
     inputs    : warranty ;
     feedback  : ;
-    operation : forwardFunction  warrantyCostFunction;
+    operation : forwardFunction warrantyCostFunction;
     outputs   : costsSeller,costsBuyer ;
     returns   : ;
 
