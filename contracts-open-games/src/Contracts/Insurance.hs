@@ -18,7 +18,7 @@ import Preprocessor.Preprocessor
 -- 0 Data types
 ---------------
 
-data Location = Seller | Buyer | Both
+data Insuree = Seller | Buyer | Both
   deriving (Show,Eq,Ord)
 
 
