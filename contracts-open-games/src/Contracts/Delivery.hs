@@ -11,6 +11,8 @@ module Contracts.Delivery where
 import Engine.Engine
 import Preprocessor.Preprocessor
 
+import Data.Tuple.Extra (uncurry3)
+
 -- Delivery and Shipment clauses
 -- This module describes clauses where delivery and shipment clauses are made
 
@@ -26,14 +28,19 @@ data Inspection = SellerInspection | BuyerInspection
   deriving (Show,Eq,Ord)
 
 type BuyerInspected = Bool
+
 type SellerInspectionConfirmed = Bool
 
--- | InspectionCondition
-inspectionOutcome :: Inspection ->  BuyerInspected -> SellerInspectionConfirmed -> Bool
-inspectionOutcome BuyerInspection  True  _ = True
-inspectionOutcome SellerInspection True  True = True
-inspectionOutcome _                _     _    = False
+type DaysUntilInspection = Int
+type DaysUntilInspectionThreshold = Int
 
+-- | InspectionCondition
+inspectionOutcome :: DaysUntilInspectionThreshold  ->  Inspection -> DaysUntilInspection ->  BuyerInspected -> SellerInspectionConfirmed -> Bool
+inspectionOutcome daysThreshold inspectionCondition days buyerDec sellerDec
+   | daysThreshold < days = False
+   | daysThreshold >= days && inspectionCondition == BuyerInspection && buyerDec == True = True
+   | daysThreshold >= days && inspectionCondition == SellerInspection && buyerDec == True && sellerDec == True = True
+   | otherwise = False 
 --------------------
 -- 1 Shipping clauses
 --------------------
@@ -110,43 +117,56 @@ riskOfLoss seller buyer probabilityDistribution damageFunction= [opengame|
     returns   : ;
 |]
 
+-- | Inspection decision; whether goods are non-confirming depends on the _inspectionCondition_
+inspectionDecision seller buyer inspectionCondition daysThreshold = [opengame|
 
+    inputs    : daysSinceShipment ;
+    feedback  : ;
 
-inspectionConsequences seller buyer inspectionCondition replacementCostFunction = [opengame|
+    :-----:
+    inputs    : daysSinceShipment ;
+    feedback  : ;
+    operation : dependentDecision buyer $ const [True,False] ;
+    outputs   : inspectedBuyer ;
+    returns   : costsBuyer;
 
-    inputs    : inspectedBuyer,confirmedSeller ;
+    inputs    : daysSinceShipment, inspectedBuyer ;
+    feedback  : ;
+    operation : dependentDecision seller $ const [True,False] ;
+    outputs   : confirmedSeller ;
+    returns   : costsSeller;
+
+    inputs    : daysSinceShipment, inspectedBuyer,confirmedSeller ;
+    feedback  : ;
+    operation : forwardFunction $ uncurry3 $ inspectionOutcome inspectionCondition daysThreshold ;
+    outputs   : nonConfirming ;
+    returns   : ;
+
+    :-----:
+
+    outputs   : nonConfirming ;
+    returns   : costsSeller,costsBuyer;
+
+|]
+
+  
+-- | Determines the costs for buyers and sellers when a good is non-confirming
+inspectionConsequences seller buyer replacementCostFunction = [opengame|
+
+    inputs    : nonConfirming ;
     feedback  : ;
 
     :-----:
 
-    inputs    : inspectedBuyer,confirmedSeller ;
-    feedback  : ;
-    operation : forwardFunction $ uncurry $ inspectionOutcome inspectionCondition ;
-    outputs   : nonConfirming ;
-    returns   : ;
-
-    inputs    : nonConfirming ;
+     inputs    : nonConfirming ;
     feedback  : ;
     operation : forwardFunction replacementCostFunction;
     outputs   : costsSeller,costsBuyer ;
     returns   : ;
 
-    inputs    : costsSeller;
-    feedback  : ;
-    operation : addPayoffs seller ;
-    outputs   :  ;
-    returns   : ;
-
-
-    inputs    : costsBuyer ;
-    feedback  : ;
-    operation : addPayoffs buyer ;
-    outputs   :  ;
-    returns   :  ;
-
     :-----:
 
-    outputs   : ;
+    outputs   :costsSeller,costsBuyer ;
     returns   : ;
 
 |]
