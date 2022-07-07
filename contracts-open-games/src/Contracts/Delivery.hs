@@ -15,15 +15,24 @@ import Preprocessor.Preprocessor
 -- This module describes clauses where delivery and shipment clauses are made
 
 
----------------
--- 0 Data types
----------------
+---------------------------------------
+-- 0 Data types and Auxiliary Functions
+---------------------------------------
 
 data Location = SellerLocation | BuyerLocation
   deriving (Show,Eq,Ord)
 
 data Inspection = SellerInspection | BuyerInspection
   deriving (Show,Eq,Ord)
+
+type BuyerInspected = Bool
+type SellerInspectionConfirmed = Bool
+
+-- | InspectionCondition
+inspectionOutcome :: Inspection ->  BuyerInspected -> SellerInspectionConfirmed -> Bool
+inspectionOutcome BuyerInspection  True  _ = True
+inspectionOutcome SellerInspection True  True = True
+inspectionOutcome _                _     _    = False
 
 --------------------
 -- 1 Shipping clauses
@@ -102,22 +111,23 @@ riskOfLoss seller buyer probabilityDistribution damageFunction= [opengame|
 |]
 
 
-inspection seller buyer inspectionCondition = [opengame|
 
-    inputs    : ;
+inspectionConsequences seller buyer inspectionCondition replacementCostFunction = [opengame|
+
+    inputs    : inspectedBuyer,confirmedSeller ;
     feedback  : ;
 
     :-----:
 
-    inputs    : ;
+    inputs    : inspectedBuyer,confirmedSeller ;
     feedback  : ;
-    operation : liftStochasticForward probabilityDistribution ;
-    outputs   : isLost ;
+    operation : forwardFunction $ uncurry $ inspectionOutcome inspectionCondition ;
+    outputs   : nonConfirming ;
     returns   : ;
 
-    inputs    : isLost ;
+    inputs    : nonConfirming ;
     feedback  : ;
-    operation : forwardFunction damageFunction;
+    operation : forwardFunction replacementCostFunction;
     outputs   : costsSeller,costsBuyer ;
     returns   : ;
 
@@ -138,9 +148,5 @@ inspection seller buyer inspectionCondition = [opengame|
 
     outputs   : ;
     returns   : ;
-
-
-
-
 
 |]
