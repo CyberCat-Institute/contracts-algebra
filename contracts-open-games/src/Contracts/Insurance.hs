@@ -26,7 +26,7 @@ data Insuree = Seller | Buyer | Both
 -- 1 Insurance clauses
 --------------------
 
--- | Insurance 
+-- | Insurance in place for a period of time
 insuranceClause seller buyer insuranceCostFunction = [opengame|
 
     inputs    : amount, periodOfTime ;
