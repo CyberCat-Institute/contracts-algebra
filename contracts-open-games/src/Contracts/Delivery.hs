@@ -22,6 +22,8 @@ import Preprocessor.Preprocessor
 data Location = SellerLocation | BuyerLocation
   deriving (Show,Eq,Ord)
 
+data Inspection = SellerInspection | BuyerInspection
+  deriving (Show,Eq,Ord)
 
 --------------------
 -- 1 Shipping clauses
@@ -97,4 +99,48 @@ riskOfLoss seller buyer probabilityDistribution damageFunction= [opengame|
 
     outputs   : ;
     returns   : ;
+|]
+
+
+inspection seller buyer inspectionCondition = [opengame|
+
+    inputs    : ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : ;
+    feedback  : ;
+    operation : liftStochasticForward probabilityDistribution ;
+    outputs   : isLost ;
+    returns   : ;
+
+    inputs    : isLost ;
+    feedback  : ;
+    operation : forwardFunction damageFunction;
+    outputs   : costsSeller,costsBuyer ;
+    returns   : ;
+
+    inputs    : costsSeller;
+    feedback  : ;
+    operation : addPayoffs seller ;
+    outputs   :  ;
+    returns   : ;
+
+
+    inputs    : costsBuyer ;
+    feedback  : ;
+    operation : addPayoffs buyer ;
+    outputs   :  ;
+    returns   :  ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+
+
+
+
+
 |]
