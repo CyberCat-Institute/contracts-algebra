@@ -34,6 +34,10 @@ type SellerInspectionConfirmed = Bool
 type DaysUntilInspection = Int
 type DaysUntilInspectionThreshold = Int
 
+type Costs = Double
+type SellerCosts = Costs
+type BuyerCosts  = Costs
+
 -- | InspectionCondition
 inspectionOutcome :: DaysUntilInspectionThreshold  ->  Inspection -> DaysUntilInspection ->  BuyerInspected -> SellerInspectionConfirmed -> Bool
 inspectionOutcome daysThreshold inspectionCondition days buyerDec sellerDec
@@ -41,10 +45,20 @@ inspectionOutcome daysThreshold inspectionCondition days buyerDec sellerDec
    | daysThreshold >= days && inspectionCondition == BuyerInspection && buyerDec == True = True
    | daysThreshold >= days && inspectionCondition == SellerInspection && buyerDec == True && sellerDec == True = True
    | otherwise = False 
+
+-- | Shipment cost functions for specializing contracts
+-- Assumes only one side bears the costs
+shipmentCostFunction :: Costs -> Location -> (SellerCosts,BuyerCosts)
+shipmentCostFunction c SellerLocation = (0,-c)
+-- ^ When the seller is the location, the buyer bears the costs
+shipmentCostFunction c BuyerLocation  = (-c,0)
+-- ^ When the buyer is the location, the seller bears the costs
+
 --------------------
 -- 1 Shipping clauses
 --------------------
 -- | Delivery and shipment costs
+-- Generic case
 shipmentCosts seller buyer costFunction= [opengame|
 
     inputs    : location ;
@@ -78,7 +92,38 @@ shipmentCosts seller buyer costFunction= [opengame|
     returns   : ;
 |]
 
--- | Risk of loss and distribution of costs
+-- | The location is fed as an exogenous parameter
+shipmentCostsExogenousLocation seller buyer loc costs = [opengame|
+
+    inputs    : ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : loc ; 
+    feedback  : ;
+    operation : shipmentCosts seller buyer (shipmentCostFunction costs) ;
+    outputs   : ;
+    returns   : ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+|]
+
+-- | Specialize to the case where the seller is the location where the goods are delivered
+-- We fix arbitrary costs here.
+shipmentCostsShipperLocation seller buyer = shipmentCostsExogenousLocation seller buyer SellerLocation 50
+
+
+-- | Specialize to the case where the buyer/purchaser is the location where the goods are delivered
+-- We fix arbitrary costs here.
+shipmentCostsPurchaserLocation seller buyer = shipmentCostsExogenousLocation seller buyer BuyerLocation 50
+
+
+
+-- | Generic risk of loss and distribution of costs
 riskOfLoss seller buyer probabilityDistribution damageFunction= [opengame|
 
     inputs    : ;
