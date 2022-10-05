@@ -8,7 +8,7 @@
 
 module Contracts.SalesOfGoods where
 
-import Contracts.Delivery (shipmentCosts,riskOfLoss,inspectionDecision,inspectionConsequences)
+import Contracts.ShipmentAndDelivery.Export
 import Contracts.ForceMajeur (forceMajeurClause)
 import Contracts.Insurance (insuranceClause)
 import Contracts.Payments (paymentSettlement)
