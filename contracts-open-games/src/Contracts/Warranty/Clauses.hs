@@ -61,7 +61,7 @@ warrantyCosts seller buyer warrantyCostFunction= [opengame|
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 |]
 
@@ -76,12 +76,12 @@ warrantyCostsExogenous seller buyer costs warrantyCostFunction = [opengame|
     inputs    : costs ;
     feedback  : ;
     operation : warrantyCosts seller buyer warrantyCostFunction ;
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 |]
 
@@ -113,19 +113,19 @@ warrantyExAnte seller buyer warrantyCostFunction costs probabilityDistribution= 
     inputs    : realizedDamage;
     feedback  : ;
     operation : warrantyCosts seller buyer warrantyCostFunction ;
-    outputs   :  ;
+    outputs   : costsSeller,costsBuyer ;
     returns   : ;
 
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer ;
     returns   : ;
 |]
 
 -- | Specialize to above cost function
-warrantyCostsExAnteExogenous seller buyer costs probDamage shareOfWarranty mode = seller buyer warrantyCostFunction' costs probabilityDistribution
- where probabilityDistribution costs = distFromList [(probDamage,costs),(1-probDamage,0)]
+warrantyCostsExAnteExogenous seller buyer costs probDamage shareOfWarranty mode = warrantyExAnte seller buyer warrantyCostFunction' costs probabilityDistribution
+ where probabilityDistribution costs = distFromList [(costs,probDamage),(0,probDamage)]
        warrantyCostFunction' = warrantyCostFunction shareOfWarranty mode
 warrantyCostsExAnteNoWarranty seller buyer costs probDamage shareOfWarranty  = warrantyCostsExAnteExogenous seller buyer costs probDamage shareOfWarranty NoWarranty
 warrantyCostsExAnteLimitedWarranty seller buyer costs probDamage shareOfWarranty  = warrantyCostsExAnteExogenous seller buyer costs probDamage shareOfWarranty LimitedWarranty

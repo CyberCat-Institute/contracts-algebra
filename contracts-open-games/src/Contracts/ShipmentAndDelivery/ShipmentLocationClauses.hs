@@ -63,7 +63,7 @@ shipmentCosts seller buyer costFunction= [opengame|
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 |]
 
@@ -78,12 +78,12 @@ shipmentCostsExogenousLocation seller buyer loc costs = [opengame|
     inputs    : loc ; 
     feedback  : ;
     operation : shipmentCosts seller buyer (shipmentCostFunction costs) ;
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 |]
 

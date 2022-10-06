@@ -41,13 +41,13 @@ salesOfGoods seller buyer interestRate costFunction probabilityDistribution dama
     inputs    : location ;
     feedback  : ;
     operation : shipmentCosts seller buyer costFunction;
-    outputs   : ;
+    outputs   : shipmentCostsSeller,shipmentCostsBuyer;
     returns   : ;
 
     inputs    : ;
     feedback  : ;
     operation : riskOfLoss seller buyer probabilityDistribution damageFunction ;
-    outputs   : ;
+    outputs   : lossSeller,lossBuyer;
     returns   : ;
 
     inputs    : warranty ;

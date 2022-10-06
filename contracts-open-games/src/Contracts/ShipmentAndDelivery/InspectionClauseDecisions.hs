@@ -110,23 +110,6 @@ inspectionConsequences seller buyer replacementCostFunction = [opengame|
 |]
 
 -- | Complete game
-inspectionGame
-  :: String
-     -> String
-     -> DaysUntilInspectionThreshold
-     -> (Bool -> (Payoff, Payoff))
-     -> ModeInspection
-     -> OpenGame
-          StochasticStatefulOptic
-          StochasticStatefulContext
-          '[Kleisli Stochastic DaysUntilInspection Bool,
-            Kleisli Stochastic (DaysUntilInspection, Bool) Bool]
-          '[[DiagnosticInfoBayesian DaysUntilInspection Bool],
-            [DiagnosticInfoBayesian (DaysUntilInspection, Bool) Bool]]
-          DaysUntilInspection
-          ()
-          ()
-          ()
 inspectionGame seller buyer  daysThreshold replacementCostFunction inspectionCondition= [opengame|
 
     inputs    : daysSinceShipment;
@@ -148,7 +131,7 @@ inspectionGame seller buyer  daysThreshold replacementCostFunction inspectionCon
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 
 |]
@@ -164,12 +147,12 @@ inspectionGameExogenous seller buyer daysThreshold daysSinceShipment replacement
     inputs    : daysSinceShipment ;
     feedback  : ;
     operation : inspectionGame seller buyer daysThreshold replacementCostFunction inspectionCondition;
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 
 |]

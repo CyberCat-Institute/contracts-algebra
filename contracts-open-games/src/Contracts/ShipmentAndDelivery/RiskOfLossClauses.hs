@@ -60,7 +60,7 @@ riskOfLoss seller buyer damageFunction  mode= [opengame|
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer ;
     returns   : ;
 |]
 
@@ -76,12 +76,12 @@ riskOfLossExogenous seller buyer damageFunction damage mode= [opengame|
     inputs    : damage ;
     feedback  : ;
     operation : riskOfLoss seller buyer damageFunction mode ;
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 |]
 
@@ -100,23 +100,6 @@ riskOfLossSeller seller buyer damage = riskOfLossParameterized seller buyer dama
 ----------------------------------
 
 -- | Generic risk of loss and distribution of costs
-riskOfLossExpectation
-  :: (Show b, Show r) =>
-     String
-     -> String
-     -> b
-     -> (t -> r -> (Payoff, Payoff))
-     -> t
-     -> (b -> Stochastic r)
-     -> OpenGame
-          StochasticStatefulOptic
-          StochasticStatefulContext
-          '[]
-          '[]
-          ()
-          ()
-          ()
-          ()
 riskOfLossExpectation seller buyer costs damageFunction mode probabilityDistribution = [opengame|
 
     inputs    : ;
@@ -133,12 +116,12 @@ riskOfLossExpectation seller buyer costs damageFunction mode probabilityDistribu
     inputs    : damage;
     feedback  : ;
     operation : riskOfLoss seller buyer damageFunction mode;
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 |]
 

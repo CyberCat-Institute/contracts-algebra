@@ -66,7 +66,7 @@ shipmentPackagingCosts seller buyer costsShippingHigh costsShippingLow costsPack
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 |]
 
@@ -82,12 +82,12 @@ shipmentPackagingCostsExogenousLocation seller buyer costsShippingHigh costsShip
     inputs    : mode ; 
     feedback  : ;
     operation : shipmentPackagingCosts seller buyer costsShippingHigh costsShippingLow costsPackagingHigh costsPackagingLow ;
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 
     :-----:
 
-    outputs   : ;
+    outputs   : costsSeller,costsBuyer;
     returns   : ;
 |]
 
