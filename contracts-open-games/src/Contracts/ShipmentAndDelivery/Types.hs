@@ -21,4 +21,9 @@ type SellerInspectionConfirmed = Bool
 type DaysUntilInspection = Int
 type DaysUntilInspectionThreshold = Int
 
+data ModePackagingShipping = BuyerFavorablePackagingShipping | NeutralPackagingShipping | SellerFavorablePackagingShipping | SellerVeryFavorablePackagingShipping
+  deriving (Show,Eq,Ord)
+
+data ModeRiskOfLoss = BuyerRisk | NeutralRisk | SellerRisk
+  deriving (Show,Eq,Ord)
 

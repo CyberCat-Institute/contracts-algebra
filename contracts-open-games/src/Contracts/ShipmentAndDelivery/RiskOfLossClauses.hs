@@ -11,30 +11,37 @@ module Contracts.ShipmentAndDelivery.RiskOfLossClauses where
 import Engine.Engine
 import Preprocessor.Preprocessor
 
+import Contracts.ShipmentAndDelivery.Types
+
 
 -- This module describes clauses which touch on risk of loss
 
+------------------------
+-- 0 Auxiliary Functions
+------------------------
+-- | How is possible damage distributed?
+riskOfLossFunction :: ModeRiskOfLoss -> Costs ->  (SellerCosts,BuyerCosts)
+riskOfLossFunction mode costs
+  | mode == BuyerRisk   = (0,-costs)
+  | mode == NeutralRisk = (-lossShared,-lossShared)
+  | mode == SellerRisk  = (-lossShared,-lossShared)
+ where lossShared = costs/2
 
------------------------------
--- 1 Shipping strategic games
------------------------------
--- | Generic risk of loss and distribution of costs
-riskOfLoss seller buyer probabilityDistribution damageFunction= [opengame|
 
-    inputs    : ;
+----------------------
+-- 1 RiskOfLossClauses
+----------------------
+-- | Generic risk of loss distribution
+riskOfLoss seller buyer damageFunction  mode= [opengame|
+
+    inputs    : damage ;
     feedback  : ;
 
     :-----:
 
-    inputs    : ;
+    inputs    : damage ;
     feedback  : ;
-    operation : liftStochasticForward probabilityDistribution ;
-    outputs   : isLost ;
-    returns   : ;
-
-    inputs    : isLost ;
-    feedback  : ;
-    operation : forwardFunction damageFunction;
+    operation : forwardFunction $ damageFunction mode;
     outputs   : costsSeller,costsBuyer ;
     returns   : ;
 
@@ -56,3 +63,82 @@ riskOfLoss seller buyer probabilityDistribution damageFunction= [opengame|
     outputs   : ;
     returns   : ;
 |]
+
+
+-- | Damage is fed as an exogenous parameter
+riskOfLossExogenous seller buyer damageFunction damage mode= [opengame|
+
+    inputs    : ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : damage ;
+    feedback  : ;
+    operation : riskOfLoss seller buyer damageFunction mode ;
+    outputs   : ;
+    returns   : ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+|]
+
+
+  
+-- | Specialize to above cost function and fix probabilities
+riskOfLossParameterized seller buyer damage mode = riskOfLossExogenous seller buyer riskOfLossFunction damage mode
+
+riskOfLossBuyer seller buyer damage = riskOfLossParameterized seller buyer damage BuyerRisk
+riskOfLossNeutral seller buyer damage = riskOfLossParameterized seller buyer damage NeutralRisk
+riskOfLossSeller seller buyer damage = riskOfLossParameterized seller buyer damage SellerRisk
+
+
+----------------------------------
+-- 2 RiskOfLoss Clauses -- ex ante
+----------------------------------
+
+-- | Generic risk of loss and distribution of costs
+riskOfLossExpectation
+  :: (Show b, Show r) =>
+     String
+     -> String
+     -> b
+     -> (t -> r -> (Payoff, Payoff))
+     -> t
+     -> (b -> Stochastic r)
+     -> OpenGame
+          StochasticStatefulOptic
+          StochasticStatefulContext
+          '[]
+          '[]
+          ()
+          ()
+          ()
+          ()
+riskOfLossExpectation seller buyer costs damageFunction mode probabilityDistribution = [opengame|
+
+    inputs    : ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : costs ;
+    feedback  : ;
+    operation : liftStochasticForward probabilityDistribution;
+    outputs   : damage;
+    returns   : ;
+
+    inputs    : damage;
+    feedback  : ;
+    operation : riskOfLoss seller buyer damageFunction mode;
+    outputs   : ;
+    returns   : ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+|]
+

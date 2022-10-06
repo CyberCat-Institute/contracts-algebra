@@ -14,9 +14,11 @@ import Preprocessor.Preprocessor
 
 
 
--- Delivery and Shipment clauses
--- This module describes clauses where delivery and shipment clauses are made
+-- Shipment location clauses
 
+------------------------
+-- 0 Auxiliary Functions
+------------------------
 
 -- | Shipment cost functions for specializing contracts
 -- Assumes only one side bears the costs
