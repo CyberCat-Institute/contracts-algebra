@@ -9,6 +9,7 @@
 module Contracts.ShipmentAndDelivery.PackagingShippingClauses where
 
 import Contracts.ShipmentAndDelivery.Types
+import Contracts.Types
 import Engine.Engine
 import Preprocessor.Preprocessor
 

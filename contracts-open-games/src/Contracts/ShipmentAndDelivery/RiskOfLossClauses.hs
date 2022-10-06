@@ -12,7 +12,7 @@ import Engine.Engine
 import Preprocessor.Preprocessor
 
 import Contracts.ShipmentAndDelivery.Types
-
+import Contracts.Types
 
 -- This module describes clauses which touch on risk of loss
 

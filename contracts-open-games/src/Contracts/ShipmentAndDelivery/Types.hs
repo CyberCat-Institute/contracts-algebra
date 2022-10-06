@@ -7,10 +7,6 @@ module Contracts.ShipmentAndDelivery.Types where
 data Location = SellerLocation | BuyerLocation
   deriving (Show,Eq,Ord)
 
-type Costs = Double
-type SellerCosts = Costs
-type BuyerCosts  = Costs
-
 data ModeInspection = SellerInspection | BuyerInspection
   deriving (Show,Eq,Ord)
 
