@@ -127,7 +127,7 @@ riskOfLossExpectation seller buyer costs damageFunction mode probabilityDistribu
 
 -- | Specialize to above cost function and fix probabilities
 riskOfLossParameterizedExpectation seller buyer damage probDamage mode= seller buyer damage damageFunction mode probabilityDistribution
-  where probabilityDistribution damage = distFromList [(probDamage,damage),(1-probDamage,0)]
+  where probabilityDistribution damage = distFromList [(costs,probDamage),(0,probDamage)]
         damageFunction = riskOfLossFunction
 
 riskOfLossExpectationBuyer seller buyer damage probDamage = riskOfLossParameterizedExpectation seller buyer damage probDamage BuyerRisk
