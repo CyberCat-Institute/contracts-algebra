@@ -24,18 +24,24 @@ import Data.Tuple.Extra (uncurry3)
 ---------------------------------------
 
 -- | InspectionCondition
-inspectionOutcome :: DaysUntilInspectionThreshold  ->  Inspection -> DaysUntilInspection ->  BuyerInspected -> SellerInspectionConfirmed -> Bool
+inspectionOutcome :: DaysUntilInspectionThreshold  ->  ModeInspection -> DaysUntilInspection ->  BuyerInspected -> SellerInspectionConfirmed -> Bool
 inspectionOutcome daysThreshold inspectionCondition days buyerDec sellerDec
    | daysThreshold < days = False
    | daysThreshold >= days && inspectionCondition == BuyerInspection && buyerDec == True = True
    | daysThreshold >= days && inspectionCondition == SellerInspection && buyerDec == True && sellerDec == True = True
    | otherwise = False 
 
+-- | Replacement costs for buyers and sellers
+-- We assume no costs for the buyer; could be different depending on the situation
+replacementCostsFunctionSellerOnly :: Costs -> Bool -> (Costs,Costs)
+replacementCostsFunctionSellerOnly _     True  = (0,0)
+replacementCostsFunctionSellerOnly costs False = (-costs,0)
+
 -----------------------------
 -- 1 Shipping strategic games
 -----------------------------
 -- | Inspection decision; whether goods are non-confirming depends on the _inspectionCondition_
-inspectionDecision seller buyer inspectionCondition daysThreshold = [opengame|
+inspectionDecision seller buyer  daysThreshold inspectionCondition = [opengame|
 
     inputs    : daysSinceShipment ;
     feedback  : ;
@@ -68,6 +74,20 @@ inspectionDecision seller buyer inspectionCondition daysThreshold = [opengame|
 
   
 -- | Determines the costs for buyers and sellers when a good is non-confirming
+inspectionConsequences
+  :: Show a =>
+     p1
+     -> p2
+     -> (a -> (b, c))
+     -> OpenGame
+          StochasticStatefulOptic
+          StochasticStatefulContext
+          '[]
+          '[]
+          a
+          ()
+          (b, c)
+          ()
 inspectionConsequences seller buyer replacementCostFunction = [opengame|
 
     inputs    : nonConfirming ;
@@ -87,3 +107,74 @@ inspectionConsequences seller buyer replacementCostFunction = [opengame|
     returns   : ;
 
 |]
+
+-- | Complete game
+inspectionGame
+  :: String
+     -> String
+     -> DaysUntilInspectionThreshold
+     -> (Bool -> (Payoff, Payoff))
+     -> ModeInspection
+     -> OpenGame
+          StochasticStatefulOptic
+          StochasticStatefulContext
+          '[Kleisli Stochastic DaysUntilInspection Bool,
+            Kleisli Stochastic (DaysUntilInspection, Bool) Bool]
+          '[[DiagnosticInfoBayesian DaysUntilInspection Bool],
+            [DiagnosticInfoBayesian (DaysUntilInspection, Bool) Bool]]
+          DaysUntilInspection
+          ()
+          ()
+          ()
+inspectionGame seller buyer  daysThreshold replacementCostFunction inspectionCondition= [opengame|
+
+    inputs    : daysSinceShipment;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : daysSinceShipment ;
+    feedback  : ;
+    operation : inspectionDecision seller buyer inspectionCondition daysThreshold;
+    outputs   : nonConfirming ;
+    returns   : costsSeller,costsBuyer ;
+
+    inputs    : nonConfirming ;
+    feedback  : ;
+    operation : inspectionConsequences seller buyer replacementCostFunction;
+    outputs   : costsSeller,costsBuyer ;
+    returns   :  ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+
+|]
+
+-- | Complete game
+inspectionGameExogenous seller buyer daysThreshold daysSinceShipment replacementCostFunction inspectionCondition = [opengame|
+
+    inputs    : ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : daysSinceShipment ;
+    feedback  : ;
+    operation : inspectionGame seller buyer daysThreshold replacementCostFunction inspectionCondition;
+    outputs   : ;
+    returns   : ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+
+|]
+
+
+-- | Specialize to inspection mode as well as above costfunction
+inspectionBuyer seller buyer  daysThreshold daysSinceShipment costs = inspectionGameExogenous seller buyer  daysThreshold daysSinceShipment (replacementCostsFunctionSellerOnly costs) BuyerInspection
+inspectionSeller seller buyer  daysThreshold daysSinceShipment costs = inspectionGameExogenous seller buyer  daysThreshold daysSinceShipment (replacementCostsFunctionSellerOnly costs) SellerInspection
+

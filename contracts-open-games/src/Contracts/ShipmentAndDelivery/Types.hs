@@ -11,7 +11,7 @@ type Costs = Double
 type SellerCosts = Costs
 type BuyerCosts  = Costs
 
-data Inspection = SellerInspection | BuyerInspection
+data ModeInspection = SellerInspection | BuyerInspection
   deriving (Show,Eq,Ord)
 
 type BuyerInspected = Bool
