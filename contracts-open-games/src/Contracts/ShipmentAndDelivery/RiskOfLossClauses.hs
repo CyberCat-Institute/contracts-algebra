@@ -19,29 +19,50 @@ import Contracts.Types
 ------------------------
 -- 0 Auxiliary Functions
 ------------------------
--- | How is possible damage distributed?
-riskOfLossFunction :: ModeRiskOfLoss -> Costs ->  (SellerCosts,BuyerCosts)
-riskOfLossFunction mode costs
-  | mode == BuyerRisk   = (0,-costs)
-  | mode == NeutralRisk = (-lossShared,-lossShared)
-  | mode == SellerRisk  = (-lossShared,-lossShared)
- where lossShared = costs/2
 
+
+-- | Given a regime how is held responsible for a damage, how is the damage distributed?
+riskOfLossFunction :: Player ->  Costs ->  (SellerCosts,BuyerCosts)
+riskOfLossFunction player  costs
+  | player == Buyer  = (0,-costs)
+  | player == Seller = (-costs,0)
+
+-- | How is the mode of risk determined?
+-- Depends on the delivery conditions and where the damage occurs
+determineWhoLoses :: ModeOfRiskOfLoss -> Player -> BuyerReceived ->  Player
+determineWhoLoses DeliveryLocation  Buyer  True  = Buyer
+determineWhoLoses DeliveryLocation  Buyer  False = Seller
+determineWhoLoses DeliveryLocation  Seller _     = Seller
+determineWhoLoses HandOverToCarrier Seller _     = Seller
+determineWhoLoses HandOverToCarrier Buyer  _     = Buyer
+
+-- | What is the probability distribution of damage?
+probabilityOfLoss :: Costs -> Stochastic (Costs, Player, BuyerReceived)
+probabilityOfLoss costs =
+  uniformDist [(costs,Buyer,True),(costs,Buyer,False),(costs,Seller,True),(costs,Seller,False)
+              ,(0,Buyer,True),(0,Buyer,False),(0,Seller,True),(0,Seller,False)]
 
 ----------------------
 -- 1 RiskOfLossClauses
 ----------------------
 -- | Generic risk of loss distribution
-riskOfLoss seller buyer damageFunction  mode= [opengame|
+riskOfLoss seller buyer damageFunction mode = [opengame|
 
-    inputs    : damage ;
+    inputs    : damage, locationDamage, buyerReceived ;
     feedback  : ;
 
     :-----:
 
-    inputs    : damage ;
+    inputs    : locationDamage, buyerReceived ;
     feedback  : ;
-    operation : forwardFunction $ damageFunction mode;
+    operation : forwardFunction $ uncurry $ determineWhoLoses mode ;
+    outputs   : whoLoses ;
+    returns   : ;
+
+
+    inputs    : whoLoses, damage  ;
+    feedback  : ;
+    operation : forwardFunction $ uncurry damageFunction;
     outputs   : costsSeller,costsBuyer ;
     returns   : ;
 
@@ -66,14 +87,14 @@ riskOfLoss seller buyer damageFunction  mode= [opengame|
 
 
 -- | Damage is fed as an exogenous parameter
-riskOfLossExogenous seller buyer damageFunction damage mode= [opengame|
+riskOfLossExogenous seller buyer damageFunction damage location buyerReceived mode= [opengame|
 
     inputs    : ;
     feedback  : ;
 
     :-----:
 
-    inputs    : damage ;
+    inputs    : damage, location, buyerReceived ;
     feedback  : ;
     operation : riskOfLoss seller buyer damageFunction mode ;
     outputs   : costsSeller,costsBuyer;
@@ -88,11 +109,18 @@ riskOfLossExogenous seller buyer damageFunction damage mode= [opengame|
 
   
 -- | Specialize to above cost function and fix probabilities
-riskOfLossParameterized seller buyer damage mode = riskOfLossExogenous seller buyer riskOfLossFunction damage mode
+riskOfLossParameterized seller buyer damage location buyerReceived mode = riskOfLossExogenous seller buyer riskOfLossFunction damage location buyerReceived mode
 
-riskOfLossBuyer seller buyer damage = riskOfLossParameterized seller buyer damage BuyerRisk
-riskOfLossNeutral seller buyer damage = riskOfLossParameterized seller buyer damage NeutralRisk
-riskOfLossSeller seller buyer damage = riskOfLossParameterized seller buyer damage SellerRisk
+riskOfLoss1 seller buyer damage = riskOfLossParameterized seller buyer damage Buyer True DeliveryLocation
+riskOfLoss2 seller buyer damage = riskOfLossParameterized seller buyer damage Buyer True HandOverToCarrier
+riskOfLoss3 seller buyer damage = riskOfLossParameterized seller buyer damage Buyer False DeliveryLocation
+riskOfLoss4 seller buyer damage = riskOfLossParameterized seller buyer damage Buyer False HandOverToCarrier
+riskOfLoss5 seller buyer damage = riskOfLossParameterized seller buyer damage Seller True DeliveryLocation
+riskOfLoss6 seller buyer damage = riskOfLossParameterized seller buyer damage Seller True HandOverToCarrier
+riskOfLoss7 seller buyer damage = riskOfLossParameterized seller buyer damage Seller False DeliveryLocation
+riskOfLoss8 seller buyer damage = riskOfLossParameterized seller buyer damage Seller False HandOverToCarrier
+
+
 
 
 ----------------------------------
@@ -100,20 +128,21 @@ riskOfLossSeller seller buyer damage = riskOfLossParameterized seller buyer dama
 ----------------------------------
 
 -- | Generic risk of loss and distribution of costs
-riskOfLossExpectation seller buyer costs damageFunction mode probabilityDistribution = [opengame|
+-- NOTE Not clear whether the acceptance decision should be also allocated randomly
+riskOfLossExpectation seller buyer  damageFunction mode probabilityDistribution = [opengame|
 
-    inputs    : ;
+    inputs    : costs ;
     feedback  : ;
 
     :-----:
 
     inputs    : costs ;
     feedback  : ;
-    operation : liftStochasticForward probabilityDistribution;
-    outputs   : damage;
+    operation : liftStochasticForward $ probabilityDistribution;
+    outputs   : damage, locationDamaged, buyerReceived;
     returns   : ;
 
-    inputs    : damage;
+    inputs    : damage, locationDamaged, buyerReceived ;
     feedback  : ;
     operation : riskOfLoss seller buyer damageFunction mode;
     outputs   : costsSeller,costsBuyer;
@@ -125,11 +154,31 @@ riskOfLossExpectation seller buyer costs damageFunction mode probabilityDistribu
     returns   : ;
 |]
 
--- | Specialize to above cost function and fix probabilities
-riskOfLossParameterizedExpectation seller buyer damage probDamage mode= seller buyer damage damageFunction mode probabilityDistribution
-  where probabilityDistribution damage = distFromList [(costs,probDamage),(0,probDamage)]
-        damageFunction = riskOfLossFunction
+riskOfLossExpectationExogenous seller buyer costs damageFunction mode probabilityDistribution = [opengame|
 
-riskOfLossExpectationBuyer seller buyer damage probDamage = riskOfLossParameterizedExpectation seller buyer damage probDamage BuyerRisk
-riskOfLossExpectationNeutral seller buyer damage probDamage = riskOfLossParameterizedExpectation seller buyer damage probDamage NeutralRisk
-riskOfLossExpectationSeller seller buyer damage probDamage = riskOfLossParameterizedExpectation seller buyer damage probDamage SellerRisk
+    inputs    : ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : costs ;
+    feedback  : ;
+    operation : riskOfLossExpectation seller buyer  damageFunction mode probabilityDistribution;
+    outputs   : costsSeller,costsBuyer;
+    returns   : ;
+
+
+    :-----:
+
+    outputs   : costsSeller,costsBuyer;
+    returns   : ;
+|]
+
+
+  
+-- | Specialize to above cost function and fix probabilities
+riskOfLossParameterizedExpectationExogenous seller buyer costs mode = riskOfLossExpectationExogenous seller buyer costs riskOfLossFunction mode probabilityOfLoss
+
+riskOfLossExpectationBuyer seller buyer damage probDamage = riskOfLossParameterizedExpectationExogenous seller buyer damage  DeliveryLocation
+riskOfLossExpectationSeller seller buyer damage probDamage = riskOfLossParameterizedExpectationExogenous seller buyer damage HandOverToCarrier
+

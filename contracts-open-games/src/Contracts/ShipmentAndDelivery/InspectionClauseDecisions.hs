@@ -25,11 +25,11 @@ import Data.Tuple.Extra (uncurry3)
 ---------------------------------------
 
 -- | InspectionCondition
-inspectionOutcome :: DaysUntilInspectionThreshold  ->  ModeInspection -> DaysUntilInspection ->  BuyerInspected -> SellerInspectionConfirmed -> Bool
+inspectionOutcome :: DaysUntilInspectionThreshold  ->  Player -> DaysUntilInspection ->  BuyerInspected -> SellerInspectionConfirmed -> Bool
 inspectionOutcome daysThreshold inspectionCondition days buyerDec sellerDec
    | daysThreshold < days = False
-   | daysThreshold >= days && inspectionCondition == BuyerInspection && buyerDec == True = True
-   | daysThreshold >= days && inspectionCondition == SellerInspection && buyerDec == True && sellerDec == True = True
+   | daysThreshold >= days && inspectionCondition == Buyer && buyerDec == True = True
+   | daysThreshold >= days && inspectionCondition == Seller && buyerDec == True && sellerDec == True = True
    | otherwise = False 
 
 -- | Replacement costs for buyers and sellers
@@ -159,6 +159,6 @@ inspectionGameExogenous seller buyer daysThreshold daysSinceShipment replacement
 
 
 -- | Specialize to inspection mode as well as above costfunction
-inspectionBuyer seller buyer  daysThreshold daysSinceShipment costs = inspectionGameExogenous seller buyer  daysThreshold daysSinceShipment (replacementCostsFunctionSellerOnly costs) BuyerInspection
-inspectionSeller seller buyer  daysThreshold daysSinceShipment costs = inspectionGameExogenous seller buyer  daysThreshold daysSinceShipment (replacementCostsFunctionSellerOnly costs) SellerInspection
+inspectionBuyer seller buyer  daysThreshold daysSinceShipment costs = inspectionGameExogenous seller buyer  daysThreshold daysSinceShipment (replacementCostsFunctionSellerOnly costs) Buyer
+inspectionSeller seller buyer  daysThreshold daysSinceShipment costs = inspectionGameExogenous seller buyer  daysThreshold daysSinceShipment (replacementCostsFunctionSellerOnly costs) Seller
 

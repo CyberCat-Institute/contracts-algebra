@@ -23,7 +23,7 @@ import Preprocessor.Preprocessor
 -- This needs to be modelled in a different fashion as these costs are contingent on things happening or on decisions in the course of the contract.
 
 -- We give one example for the damage as modelled in an external fashion (NOTE the moral hazard version in the corresponding clause file)
-
+{-
 -- | Sales of good contract
 salesOfGoods seller buyer interestRate costFunction probabilityDistribution damageFunction warrantyCostFunction insuranceCostFunction = [opengame|
 
@@ -135,3 +135,4 @@ salesOfGoodsInspection seller buyer interestRate costFunction probabilityDistrib
 
 |]
 
+--}

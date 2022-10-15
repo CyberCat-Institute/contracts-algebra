@@ -23,10 +23,10 @@ import Preprocessor.Preprocessor
 
 -- | Shipment cost functions for specializing contracts
 -- Assumes only one side bears the costs
-shipmentCostFunction :: Costs -> Location -> (SellerCosts,BuyerCosts)
-shipmentCostFunction c SellerLocation = (0,-c)
+shipmentCostFunction :: Costs -> Player -> (SellerCosts,BuyerCosts)
+shipmentCostFunction c Seller = (0,-c)
 -- ^ When the seller is the location, the buyer bears the costs
-shipmentCostFunction c BuyerLocation  = (-c,0)
+shipmentCostFunction c Buyer  = (-c,0)
 -- ^ When the buyer is the location, the seller bears the costs
 
 --------------------
@@ -89,12 +89,12 @@ shipmentCostsExogenousLocation seller buyer loc costs = [opengame|
 
 -- | Specialize to the case where the seller is the location where the goods are delivered
 -- We fix arbitrary costs here.
-shipmentCostsShipperLocation seller buyer costs = shipmentCostsExogenousLocation seller buyer SellerLocation costs
+shipmentCostsShipperLocation seller buyer costs = shipmentCostsExogenousLocation seller buyer Seller costs
 
 
 -- | Specialize to the case where the buyer/purchaser is the location where the goods are delivered
 -- We fix arbitrary costs here.
-shipmentCostsPurchaserLocation seller buyer costs = shipmentCostsExogenousLocation seller buyer BuyerLocation costs
+shipmentCostsPurchaserLocation seller buyer costs = shipmentCostsExogenousLocation seller buyer Buyer costs
 
 
 
