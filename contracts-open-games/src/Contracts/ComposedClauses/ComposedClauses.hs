@@ -58,7 +58,7 @@ locationPlusRiskOfLoss seller buyer damageFunction mode costFunction = [opengame
     returns   : ;
 |]
 
--- | Compose warranty and  
+-- | Compose warranty and inspection clauses
 inspectionPlusWarranty seller buyer  daysThreshold inspectionCondition warrantyCostFunction warrantyAffected = [opengame|
 
     inputs    : daysSinceShipment, warranty ;
@@ -77,8 +77,6 @@ inspectionPlusWarranty seller buyer  daysThreshold inspectionCondition warrantyC
     operation : forwardFunction $ warrantyApplies ;
     outputs   : warrantyRealized;
     returns   : ;
-
-   
 
     inputs    : warrantyRealized ;
     feedback  : ;
