@@ -3,20 +3,26 @@
 
 module Analysis.Warranty where
 
+import Analysis.AuxiliaryFunctions
 import Contracts.Warranty.Clauses
 import Engine.Engine
 
 
--- Define scenarios of interest
-scenario1 = warrantyCostsNoWarranty "seller" "buyer" 100 0.5
+---------------
+-- 0 Warranties
+---------------
 
-scenario2 = warrantyCostsExAnteLimitedWarranty "seller" "buyer" 100 0.5 0.5
+-- Define scenarios of interest
+scenarioWarranty1 = warrantyCostsNoWarranty "seller" "buyer" 100 0.5
+
+scenarioWarranty2 = warrantyCostsExAnteLimitedWarranty "seller" "buyer" 100 0.5 0.5
 
 
 -- Run simulations
 -- Only one step as outcome is deterministic
-simulatedScenario1 :: Stochastic (Payoff, Payoff)
-simulatedScenario1 = nextState (play scenario1  Nil) ()
+simulatedScenarioWarranty1 :: (Payoff, Payoff)
+simulatedScenarioWarranty1 = computeExpectation $ nextState (play scenarioWarranty1  Nil) ()
 
-simulatedScenario2 :: Stochastic (Payoff, Payoff)
-simulatedScenario2 = nextState (play scenario2 Nil) ()
+simulatedScenarioWarranty2 :: (Payoff, Payoff)
+simulatedScenarioWarranty2 = computeExpectation $ nextState (play scenarioWarranty2 Nil) ()
+
