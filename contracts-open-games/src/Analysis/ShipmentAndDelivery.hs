@@ -28,6 +28,7 @@ simulatedScenarioShipmentCostsShipperLocation2 = computeExpectation $ nextState 
 -----------------
 -- 1 Risk of Loss
 -----------------
+
 -- Define scenarios of interest
 scenarioRiskOfLoss1 = riskOfLoss1 "seller" "buyer" 100
 scenarioRiskOfLoss2 = riskOfLoss2 "seller" "buyer" 100
@@ -53,3 +54,19 @@ simulatedRiskOfLoss7 = computeExpectation $ nextState (play scenarioRiskOfLoss7 
 simulatedRiskOfLoss8 = computeExpectation $ nextState (play scenarioRiskOfLoss8  Nil) ()
 simulatedRiskOfLoss9 = computeExpectation $ nextState (play scenarioRiskOfLoss9  Nil) ()
 simulatedRiskOfLoss10 = computeExpectation $ nextState (play scenarioRiskOfLoss10  Nil) ()
+
+---------------------------
+-- 2 Packaging and Shipping
+---------------------------
+
+-- Define scenarios of interest
+scenarioShipmentPackaging1 = shipmentPackagingCostsBuyerFavorable "seller" "buyer" 100 50 100 50
+scenarioShipmentPackaging2 = shipmentPackagingCostsNeutral "seller" "buyer" 100 50 100 50
+scenarioShipmentPackaging3 = shipmentPackagingCostsSellerFavorable "seller" "buyer" 100 50 100 50
+scenarioShipmentPackaging4 = shipmentPackagingCostsSellerVeryFavorable "seller" "buyer" 100 50 100 50
+
+-- Run simulations
+simulatedShipmentPackaging1 = computeExpectation $ nextState (play scenarioShipmentPackaging1 Nil) ()
+simulatedShipmentPackaging2 = computeExpectation $ nextState (play scenarioShipmentPackaging2 Nil) ()
+simulatedShipmentPackaging3 = computeExpectation $ nextState (play scenarioShipmentPackaging3 Nil) ()
+simulatedShipmentPackaging4 = computeExpectation $ nextState (play scenarioShipmentPackaging4 Nil) ()
