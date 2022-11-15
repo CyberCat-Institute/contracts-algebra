@@ -9,6 +9,7 @@
 module Contracts.ComposedClauses.ComposedClauses
   where
 
+import Contracts.Payments.Payments
 import Contracts.ShipmentAndDelivery.InspectionClauseDecisions
 import Contracts.ShipmentAndDelivery.ShipmentLocationClauses
 import Contracts.ShipmentAndDelivery.RiskOfLossClauses
@@ -17,7 +18,7 @@ import Contracts.Warranty.Clauses
 import Contracts.Types
 import Engine.Engine
 import Preprocessor.Preprocessor
-
+import Examples.Auctions.SimultaneousBidAuction (bidding2ExposeWinningBid)
 
 -----------------------------
 -- 0. Auxiliary functionality
@@ -89,3 +90,33 @@ inspectionPlusWarranty seller buyer  daysThreshold inspectionCondition warrantyC
     outputs   : ;
     returns   : ;
 |]
+
+
+-- | Compose auction case which determines the price with payment scheme
+-- We work with a second price auction with one item
+auctionPayment seller buyer1 buyer2 interestRate daysLate = [opengame|
+
+    inputs    : ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : ;
+    feedback  : ;
+    operation : bidding2ExposeWinningBid buyer1 buyer2 2 1 0 values values values values;
+    outputs   : (winner,bid) ;
+    returns   : ;
+
+
+    inputs    : bid, daysLate, seller, winner ;
+    feedback  : ;
+    operation : paymentSettlementEndogenousRoles interestRate ;
+    outputs   :  ;
+    returns   : ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+|]
+  where values = [0,1..10] :: [Double]

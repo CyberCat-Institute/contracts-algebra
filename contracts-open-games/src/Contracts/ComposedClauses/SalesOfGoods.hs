@@ -6,12 +6,12 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE QuasiQuotes #-}
 
-module Contracts.SalesOfGoods where
+module Contracts.ComposedClauses.SalesOfGoods where
 
 import Contracts.ShipmentAndDelivery.Export
 import Contracts.ForceMajeur (forceMajeurClause)
 import Contracts.Insurance (insuranceClause)
-import Contracts.Payments (paymentSettlement)
+import Contracts.Payments.Payments (paymentSettlement)
 import Contracts.Termination ()
 import Contracts.Warranty (warrantyCosts)
 import Engine.Engine
