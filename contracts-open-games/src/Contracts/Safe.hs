@@ -13,7 +13,6 @@
 module Contracts.Safe where
 
 import Engine.Engine
-import Language.Haskell.TH (safe)
 import Preprocessor.Preprocessor
 
 ---------------
@@ -40,8 +39,7 @@ safeAgreementMatrix DontSettle DontSettle = 0
 -- 2 Representation
 
 -- | Prisoner's dilemma in verbose form
-safeAgreement =
-  [opengame|
+safeAgreement = [opengame|
 
    inputs    :      ;
    feedback  :      ;
@@ -86,5 +84,5 @@ strategTupleCooperate = cooperateStrategy ::- cooperateStrategy ::- Nil
 strategTupleDefect = defectStrategy ::- defectStrategy ::- Nil
 -- ^ Both players defect with certainty
 
-isEquilibriumSafeAgreement strategTupleCooperate -- NOT an eq
-isEquilibriumSafeAgreement strategTupleDefect -- eq
+-- isEquilibriumSafeAgreement strategTupleCooperate -- NOT an eq
+-- isEquilibriumSafeAgreement strategTupleDefect -- eq
