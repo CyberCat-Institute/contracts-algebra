@@ -39,7 +39,8 @@ safeAgreementMatrix DontSettle DontSettle = 0
 -- 2 Representation
 
 -- | Prisoner's dilemma in verbose form
-safeAgreement = [opengame|
+safeAgreement =
+  [opengame|
 
    inputs    :      ;
    feedback  :      ;
