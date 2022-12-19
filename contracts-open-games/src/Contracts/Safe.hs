@@ -28,18 +28,18 @@ data SafeMove = Settle | DontSettle deriving (Eq, Ord, Show)
 ------------
 
 -- | Payoff matrix for player i given i's action and j's action
-safeAgreementMatrix :: SafeMove -> SafeMove -> Double
+safeAgreementMatrix :: SafeMove -> SafeMove -> Double -> Double
 -- safeAgreementMatrix Company Investor = Payoff
-safeAgreementMatrix Settle Settle = 2
-safeAgreementMatrix Settle DontSettle = -1
-safeAgreementMatrix DontSettle Settle = 3
-safeAgreementMatrix DontSettle DontSettle = 0
+safeAgreementMatrix Settle Settle x = 2 * x
+safeAgreementMatrix Settle DontSettle x = 0 * x
+safeAgreementMatrix DontSettle Settle x = 0 * x
+safeAgreementMatrix DontSettle DontSettle x = -1 * x
 
 --------------------
 -- 2 Representation
 
--- | Prisoner's dilemma in verbose form
-safeAgreement =
+-- | Prisoner's dilemma in verbose form; x is an exogenous variable
+safeAgreement x =
   [opengame|
 
    inputs    :      ;
@@ -50,13 +50,13 @@ safeAgreement =
    feedback  :      ;
    operation : dependentDecision "player1" (const [Settle,DontSettle]);
    outputs   : decisionPlayer1 ;
-   returns   : safeAgreementMatrix decisionPlayer1 decisionPlayer2 ;
+   returns   : safeAgreementMatrix decisionPlayer1 decisionPlayer2 x;
 
    inputs    :      ;
    feedback  :      ;
    operation : dependentDecision "player2" (const [Settle,DontSettle]);
    outputs   : decisionPlayer2 ;
-   returns   : safeAgreementMatrix decisionPlayer2 decisionPlayer1 ;
+   returns   : safeAgreementMatrix decisionPlayer2 decisionPlayer1 x;
 
    :----------------------------:
 
@@ -67,7 +67,7 @@ safeAgreement =
 --------------------------
 -- 3 Equilibrium analysis
 
-isEquilibriumSafeAgreement strat = generateIsEq $ evaluate safeAgreement strat void
+isEquilibriumSafeAgreement strat x = generateIsEq $ evaluate (safeAgreement x) strat void
 
 -- | Define pure single player strategies
 cooperateStrategy :: Kleisli Stochastic () SafeMove
@@ -84,6 +84,9 @@ strategTupleCooperate = cooperateStrategy ::- cooperateStrategy ::- Nil
 
 strategTupleDefect = defectStrategy ::- defectStrategy ::- Nil
 -- ^ Both players defect with certainty
+
+-- Show Diagnostic info of the game
+showStats x = generateOutput $ evaluate (safeAgreement x) strategTupleCooperate void
 
 -- isEquilibriumSafeAgreement strategTupleCooperate -- NOT an eq
 -- isEquilibriumSafeAgreement strategTupleDefect -- eq

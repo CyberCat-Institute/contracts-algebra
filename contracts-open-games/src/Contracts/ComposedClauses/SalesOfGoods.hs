@@ -1,17 +1,20 @@
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
-{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances, FlexibleContexts, TemplateHaskell #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TupleSections #-}
 
 module Contracts.ComposedClauses.SalesOfGoods where
 
-import Contracts.ShipmentAndDelivery.Export
 import Contracts.ForceMajeur (forceMajeurClause)
 import Contracts.Insurance (insuranceClause)
 import Contracts.Payments.Payments (paymentSettlement)
+import Contracts.ShipmentAndDelivery.Export
 import Contracts.Termination ()
 import Contracts.Warranty (warrantyCosts)
 import Engine.Engine
@@ -67,7 +70,7 @@ salesOfGoods seller buyer interestRate costFunction probabilityDistribution dama
     outputs   : ;
     returns   : ;
 
-|]
+\|]
 
 -----------------------------------
 -- Scenarios in the course of the
@@ -99,7 +102,7 @@ salesOfGoodsForceMajeur seller buyer interestRate costFunction probabilityDistri
     outputs   : ;
     returns   : ;
 
-|]
+\|]
 
 -- | What if the inspection scenario kicks in?
 -- We consider this a strategic choice
@@ -133,6 +136,6 @@ salesOfGoodsInspection seller buyer interestRate costFunction probabilityDistrib
     outputs   : ;
     returns   : ;
 
-|]
+\|]
 
 --}
