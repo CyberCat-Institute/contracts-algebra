@@ -30,6 +30,8 @@ data SafeMove = Settle | DontSettle deriving (Eq, Ord, Show)
 -- | Payoff matrix for player i given i's action and j's action
 safeAgreementMatrix :: SafeMove -> SafeMove -> Double -> Double
 -- safeAgreementMatrix Company Investor = Payoff
+-- TODO: add another variable for valuation cap
+
 safeAgreementMatrix Settle Settle x = 2 * x
 safeAgreementMatrix Settle DontSettle x = 0 * x
 safeAgreementMatrix DontSettle Settle x = 0 * x
