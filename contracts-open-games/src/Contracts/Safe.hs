@@ -22,20 +22,24 @@ import Preprocessor.Preprocessor
 ---------------
 data SafeMove = Settle | DontSettle deriving (Eq, Ord, Show)
 
+x = distrFromList [(0, 0.5), (100000, 0.2), (1000000, 0.2), (10000000, 0.008), (100000000, 0.0019999), (1000000000, 0.0000001)]
+
+-- TODO: if valuation is 1B, add 'UNICORN!' to logs
+
 ------------
 -- 1 Payoffs
--- The payoff is the amount of cap table space that the
+-- The payoff is the reward the investor gets depending on the valuation
 ------------
 
 -- | Payoff matrix for player i given i's action and j's action
 safeAgreementMatrix :: SafeMove -> SafeMove -> Double -> Double
 -- safeAgreementMatrix Company Investor = Payoff
--- TODO: add another variable for valuation cap
+-- TODO: add different equations for games depending on x
 
-safeAgreementMatrix Settle Settle x = 2 * x
-safeAgreementMatrix Settle DontSettle x = 0 * x
-safeAgreementMatrix DontSettle Settle x = 0 * x
-safeAgreementMatrix DontSettle DontSettle x = -1 * x
+safeAgreementMatrix Settle Settle x = (^) x 2 -- x^2 for exponential gains as the valuation grows
+safeAgreementMatrix Settle DontSettle x = ((**) (x * 0.3) 2) + 60000 -- decaying reward over time; 0.3 is the decay rate, 60000 is for payoff buffer
+safeAgreementMatrix DontSettle Settle x = 0 * x -- neither parties gain if the company doesn't settle
+safeAgreementMatrix DontSettle DontSettle x = ((**) (x * 0.3) 2) + 60000 -- Same outcome if investor doesn't settle
 
 --------------------
 -- 2 Representation
