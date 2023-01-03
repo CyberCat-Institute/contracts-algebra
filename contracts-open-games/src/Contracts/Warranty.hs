@@ -8,8 +8,9 @@
 
 module Contracts.Warranty where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 -- Warranty rules
 -- This module describes clauses where warranty costs are regulated

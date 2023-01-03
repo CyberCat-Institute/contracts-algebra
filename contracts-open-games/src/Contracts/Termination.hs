@@ -8,8 +8,8 @@
 
 module Contracts.Termination where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 import Data.Tuple.Extra (uncurry3)
 

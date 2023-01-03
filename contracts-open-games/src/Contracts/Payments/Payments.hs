@@ -8,8 +8,8 @@
 
 module Contracts.Payments.Payments where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 -- Payment clauses
 -- This module describes a game where expenses are charged by different parties

@@ -8,8 +8,8 @@
 
 module Contracts.ForceMajeur where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 -- Force Majeure Events
 -- TODO Add conditionality for days after event happend

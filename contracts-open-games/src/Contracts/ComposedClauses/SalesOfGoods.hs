@@ -17,8 +17,9 @@ import Contracts.Payments.Payments (paymentSettlement)
 import Contracts.ShipmentAndDelivery.Export
 import Contracts.Termination ()
 import Contracts.Warranty (warrantyCosts)
-import Engine.Engine
-import Preprocessor.Preprocessor
+
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 -- This module describes a composed model of the sales of good clauses
 

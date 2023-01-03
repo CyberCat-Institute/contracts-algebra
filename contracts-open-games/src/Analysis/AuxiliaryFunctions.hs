@@ -3,7 +3,7 @@
 module Analysis.AuxiliaryFunctions where
 
 import Contracts.ShipmentAndDelivery.Export
-import Engine.Engine
+import OpenGames.Engine.Engine
 import Numeric.Probability.Distribution (decons)
 
 computeExpectation

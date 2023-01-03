@@ -10,8 +10,8 @@ module Contracts.ShipmentAndDelivery.InspectionClauseDecisions where
 
 import Contracts.ShipmentAndDelivery.Types
 import Contracts.Types
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 
 import Data.Tuple.Extra (uncurry3)

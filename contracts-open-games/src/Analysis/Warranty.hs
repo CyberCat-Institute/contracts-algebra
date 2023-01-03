@@ -5,7 +5,7 @@ module Analysis.Warranty where
 
 import Analysis.AuxiliaryFunctions
 import Contracts.Warranty.Clauses
-import Engine.Engine
+import OpenGames.Engine.Engine
 
 
 ---------------

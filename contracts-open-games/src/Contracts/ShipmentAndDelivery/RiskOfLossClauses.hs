@@ -8,8 +8,8 @@
 
 module Contracts.ShipmentAndDelivery.RiskOfLossClauses where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 import Contracts.ShipmentAndDelivery.Types
 import Contracts.Types

@@ -8,8 +8,8 @@
 
 module Contracts.Subcontracting where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 
 -- Subcontracting clauses

@@ -10,8 +10,8 @@ module Contracts.ShipmentAndDelivery.PackagingShippingClauses where
 
 import Contracts.ShipmentAndDelivery.Types
 import Contracts.Types
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 -- Packaging and Shipping Clauses
 -- This module describes clauses where delivery and shipment clauses are made

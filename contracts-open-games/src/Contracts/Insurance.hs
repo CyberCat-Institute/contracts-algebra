@@ -8,8 +8,8 @@
 
 module Contracts.Insurance where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 -- Insurance arrangements
 

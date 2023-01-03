@@ -12,8 +12,9 @@
 ------------------------------------------------------------------------------
 module Contracts.Safe where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
+
 
 ---------------
 -- 0 Data types
@@ -22,7 +23,8 @@ import Preprocessor.Preprocessor
 ---------------
 data SafeMove = Settle | DontSettle deriving (Eq, Ord, Show)
 
-x = distrFromList [(0, 0.5), (100000, 0.2), (1000000, 0.2), (10000000, 0.008), (100000000, 0.0019999), (1000000000, 0.0000001)]
+x :: Stochastic Double
+x = distFromList [(0, 0.5), (100000, 0.2), (1000000, 0.2), (10000000, 0.008), (100000000, 0.0019999), (1000000000, 0.0000001)]
 
 -- TODO: if valuation is 1B, add 'UNICORN!' to logs
 

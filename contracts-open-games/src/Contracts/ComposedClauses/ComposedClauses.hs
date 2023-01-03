@@ -16,8 +16,9 @@ import Contracts.ShipmentAndDelivery.RiskOfLossClauses
 import Contracts.ShipmentAndDelivery.Types
 import Contracts.Warranty.Clauses
 import Contracts.Types
-import Engine.Engine
-import Preprocessor.Preprocessor
+
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 import Examples.Auctions.SimultaneousBidAuction (bidding2ExposeWinningBid)
 
 -----------------------------
