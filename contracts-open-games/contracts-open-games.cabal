@@ -36,7 +36,12 @@ library
       Contracts.Insurance
       Contracts.Liability
       Contracts.Payments.Payments
-      Contracts.Safe
+      Contracts.Safe.Conversion
+      Contracts.Safe.EquityFinancing
+      Contracts.Safe.ExitDecision
+      Contracts.Safe.NewMoney
+      Contracts.Safe.SafeAgreement
+      Contracts.Safe.Types
       Contracts.ShipmentAndDelivery.Export
       Contracts.ShipmentAndDelivery.InspectionClauseDecisions
       Contracts.ShipmentAndDelivery.PackagingShippingClauses

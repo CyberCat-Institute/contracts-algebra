@@ -25,9 +25,6 @@ data SafeMove = Settle | DontSettle deriving (Eq, Ord, Show)
 y :: Stochastic Double
 y = distFromList [(0.0, 0.5), (100000.0, 0.2), (1000000.0, 0.2), (10000000.0, 0.008), (100000000.0, 0.0019999), (1000000000.0, 0.0000001)]
 
--- if y == 1000000000
---       then putStrLn "UNICORN!"
-
 ------------
 -- 1 Payoffs
 -- The payoff is the reward the investor gets depending on the valuation
@@ -35,7 +32,7 @@ y = distFromList [(0.0, 0.5), (100000.0, 0.2), (1000000.0, 0.2), (10000000.0, 0.
 
 -- | Payoff matrix for player i given i's action and j's action
 safeAgreementMatrix :: SafeMove -> SafeMove -> Double -> Double
-safeAgreementMatrix company investor payoff = payoff
+-- safeAgreementMatrix company investor payoff = payoff
 safeAgreementMatrix Settle Settle x = (^) x 2 -- x^2 for exponential gains as the valuation grows
 safeAgreementMatrix Settle DontSettle x = ((**) (x * 0.3) 2) + 60000 -- decaying reward over time; 0.3 is the decay rate, 60000 is for payoff buffer
 safeAgreementMatrix DontSettle Settle x = 0 * x -- neither parties gain if the company doesn't settle
@@ -46,7 +43,7 @@ safeAgreementMatrix DontSettle DontSettle x = ((**) (x * 0.3) 2) + 60000 -- Same
 
 -- 2 Representation
 
--- | Prisoner's dilemma in verbose form; x is an exogenous variable
+-- | x is an exogenous variable
 safeAgreement x =
   [opengame|
 
@@ -105,7 +102,6 @@ safeAgreement2 =
    returns   :      ;
   |]
 
--- idea: new incomplete information game Investor v Investor to determine valuation
 --------------------------
 -- 3 Equilibrium analysis
 
