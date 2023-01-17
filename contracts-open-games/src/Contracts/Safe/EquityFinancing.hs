@@ -4,7 +4,9 @@ import Contracts.Safe.Types
 import Engine.Engine
 import Preprocessor.Preprocessor
 
-pricedRound :: HowMuchToRaise -> z -> SeriesInvestment -> SeriesValuation
+data Reinvest = Reinvest | DontReinvest deriving (Show, Eq, Ord)
+
+pricedRound :: HowMuchToRaise -> z -> SeriesInvestment -> SeriesValuation -> Reinvest
 
 equityFinancing =
   [opengame|
@@ -15,7 +17,7 @@ equityFinancing =
 
         inputs    : howMuchToRaise,z;
         feedback  : ;
-        operation : pricedRound;
+        operation : dependentDecision pricedRound (const [Reinvest,DontReinvest]);
         outputs   : SeriesInvestment, SeriesValuation;
         returns   : CashOut;
 
