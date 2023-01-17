@@ -4,8 +4,11 @@ import Contracts.Safe.Types
 import Engine.Engine
 import Preprocessor.Preprocessor
 
+-- exit or no?
+data ExitDecisionMatrix = Exit | Stay deriving (Show, Eq, Ord)
+
 -- function to determine if the SAFE Investor will be backing out of the deal
-safeExitDecision :: SeriesInvestment -> SeriesValuation -> CapTable -> CashOut -> CapTable
+safeExitDecision :: SeriesInvestment -> SeriesValuation -> CapTable -> CashOut -> CapTable -> ExitDecisionMatrix
 
 exitDecision =
   [opengame|
@@ -16,8 +19,8 @@ exitDecision =
 
         inputs    : investment,valuation,capTable;
         feedback  : ;
-        operation : safeExitDecision;
-        outputs   : CapTable, CashOut ;
+        operation : dependentDecision safeExitDecision (const [Exit,Stay]);
+        outputs   : ExitDecisionMatrix, CapTable, CashOut ;
         returns   : ;
 
         :----------------------------:
