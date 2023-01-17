@@ -10,7 +10,7 @@
 {-# LANGUAGE TupleSections #-}
 
 ------------------------------------------------------------------------------
-module Contracts.Safe where
+module Contracts.Safe.Safe where
 
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
