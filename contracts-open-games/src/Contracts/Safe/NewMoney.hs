@@ -1,27 +1,46 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TupleSections #-}
+
+
+
 module Contracts.Safe.NewMoney where
 
+
 import Contracts.Safe.Types
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
+
+data RaiseDecision = Raise | DontRaise
+  deriving (Show,Eq,Ord)
 
 -- function to determine how much money to raise
-newMoneyDecision :: SafeInvestment -> z -> HowMuchToRaise
+-- newMoneyDecision :: SafeInvestment -> z -> HowMuchToRaise
+-- newMoneyDecision investment z  = undefined
 
-newMoney =
-  [opengame|
-        inputs    : investment,z ;
-        feedback  : ;
 
-        :----------------------------:
 
-        inputs    : investment,z ;
-        feedback  : ;
-        operation : newMoneyDecision;
-        outputs   : HowMuchToRaise ;
-        returns   : ;
 
-        :----------------------------:
+newMoney name distribution payoffFunction = [opengame|
+  inputs    : investment, performanceAtT1;
+  feedback  : ;
 
-        outputs   : HowMuchToRaise;
-        returns   : ;
+  :----------------------------:
+
+  inputs    : investment, performanceAtT1 ;
+  feedback  : ;
+  operation : dependentDecision name (const [Raise,DontRaise]);
+  outputs   : howMuchToRaise ;
+  returns   : payoffFunction newInvestment companyShares exitPayoff;
+
+  :----------------------------:
+
+  outputs   : howMuchToRaise;
+  returns   : newInvestment, companyShares, exitPayoff ;
     |]

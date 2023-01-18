@@ -1,12 +1,23 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TupleSections #-}
+
+
 module Contracts.Safe.Conversion where
 
 import Contracts.Safe.Types
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
-equityConversion :: SafeInvestment -> SeriesValuation -> StockValPair -> CapTable
+-- equityConversion :: SafeInvestment -> SeriesValuation -> StockValPair -> CapTable
 
-conversion =
+conversion equityConversion =
   [opengame|
         inputs    : investment,valuation;
         feedback  : ;
@@ -15,12 +26,12 @@ conversion =
 
         inputs    : investment,valuation;
         feedback  : ;
-        operation : equityConversion;
-        outputs   : StockValPair, CapTable ;
+        operation : forwardFunction equityConversion;
+        outputs   : (investor,ownershipPercentage) ;
         returns   : ;
 
         :----------------------------:
 
-        outputs   : StockValPair, CapTable;
+        outputs   : (investor,ownershipPercentage);
         returns   : ;
     |]

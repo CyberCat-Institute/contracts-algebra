@@ -10,7 +10,7 @@
 {-# LANGUAGE TupleSections #-}
 
 ------------------------------------------------------------------------------
-module Contracts.Safe.Safe where
+module Contracts.Safe.SafeAgreement where
 
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
@@ -72,30 +72,30 @@ safeAgreement x =
   |]
 
 -- Safe agreement 2: No x variable for valuation; endogenous valuation
-safeAgreement2 =
+safeAgreement2 distribution =
   [opengame|
 
-   inputs    :      ;
-   feedback  :      ;
+   inputs    : quality   ;
+   feedback  :           ;
 
    :----------------------------:
    inputs    :      ;
    feedback  :      ;
-   operation : nature y;
-   outputs   : x;
+   operation : nature distribution;
+   outputs   : performanceAtT0;
    returns   : ;
 
-   inputs    :      ;
+   inputs    :  quality, performanceAtT0   ;
    feedback  :      ;
    operation : dependentDecision "Company" (const [Settle,DontSettle]);
-   outputs   : decisionPlayer1 ;
-   returns   : safeAgreementMatrix decisionPlayer1 decisionPlayer2 x;
+   outputs   : decisionCompany ;
+   returns   : safeAgreementMatrix decisionCompany decisionInvestor performanceAtT0;
 
-   inputs    :      ;
+   inputs    :   quality, performanceAtT0   ;
    feedback  :      ;
    operation : dependentDecision "Investor" (const [Settle,DontSettle]);
-   outputs   : decisionPlayer2 ;
-   returns   : safeAgreementMatrix decisionPlayer2 decisionPlayer1 x;
+   outputs   : decisionInvestor ;
+   returns   : safeAgreementMatrix decisionInvestor decisionCompany performanceAtT0;
 
    :----------------------------:
 
@@ -106,6 +106,8 @@ safeAgreement2 =
 --------------------------
 -- 3 Equilibrium analysis
 
+{--
+    
 isEquilibriumSafeAgreement strat x = generateIsEq $ evaluate (safeAgreement x) strat void
 
 -- | Define pure single player strategies
@@ -131,3 +133,4 @@ showStatsEndogenous = generateOutput $ evaluate safeAgreement2 strategTupleCoope
 
 -- isEquilibriumSafeAgreement strategTupleCooperate -- NOT an eq
 -- isEquilibriumSafeAgreement strategTupleDefect -- eq
+-}

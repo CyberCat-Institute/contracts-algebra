@@ -1,6 +1,6 @@
 module Contracts.Safe.Types where
 
-import Engine.Engine
+import OpenGames.Engine.Engine
 
 ---------------
 -- Data types
