@@ -8,16 +8,13 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TupleSections #-}
 
-
-
 module Contracts.Safe.EquityFinancing where
-
 
 import Contracts.Safe.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
-data Reinvest = Reinvest | DontReinvest deriving (Show, Eq, Ord)
+data SAFEReinvest = Reinvest | DontReinvest deriving (Show, Eq, Ord)
 
 -- pricedRound :: HowMuchToRaise -> z -> SeriesInvestment -> SeriesValuation -> Reinvest
 
@@ -27,16 +24,21 @@ equityFinancing name undefinedDecisionSpace =
         feedback  : ;
 
         :----------------------------:
-
-        inputs    : howMuchToRaise,valuation,performanceAtT1;
+        inputs    :      ;
+        feedback  :      ;
+        operation : dependentDecision name (const [Reinvest, DontReinvest]);;
+        outputs   : SAFEReinvest;
+        returns   : ;
+   
+        inputs    : howMuchToRaise,valuation,performanceAtT1,Reinvest;
         feedback  : ;
         operation : dependentDecision name (const undefinedDecisionSpace);
         // TODO replace by adequate game among investors and other players
-        outputs   : (investor,seriesInvestment), seriesValuation;
+        outputs   : CapTable, SeriesValuation;
         returns   : exitPayoff;
 
         :----------------------------:
 
-        outputs   : (investor,seriesInvestment), seriesValuation;
+        outputs   : CapTable, SeriesValuation;
         returns   : exitPayoff;
     |]

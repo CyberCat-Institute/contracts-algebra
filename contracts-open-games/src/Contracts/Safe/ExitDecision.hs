@@ -12,7 +12,7 @@ safeExitDecision :: SeriesInvestment -> SeriesValuation -> CapTable -> CashOut -
 
 exitDecision =
   [opengame|
-        inputs    : investment,valuation,capTable;
+        inputs    : investment,valuation,CapTable;
         feedback  : ;
 
         :----------------------------:

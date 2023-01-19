@@ -8,29 +8,29 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TupleSections #-}
 
-module Contracts.Safe.Conversion where
+module Contracts.Safe.CapTableToStock where
 
 import Contracts.Safe.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
-equityConversion :: SafeInvestment -> SeriesValuation -> StockValPair -> CapTable
+capConversion :: _
 
-conversion equityConversion =
+capTableToStock CapTable valuation =
   [opengame|
-        inputs    : investment,valuation;
+        inputs    : CapTable,valuation;
         feedback  : ;
 
         :----------------------------:
 
         inputs    : investment,valuation;
         feedback  : ;
-        operation : forwardFunction equityConversion;
-        outputs   : CapTable ;
+        operation : forwardFunction capConversion;
+        outputs   : StockValPair ;
         returns   : ;
 
         :----------------------------:
 
-        outputs   : CapTable;
+        outputs   : StockValPair;
         returns   : ;
     |]

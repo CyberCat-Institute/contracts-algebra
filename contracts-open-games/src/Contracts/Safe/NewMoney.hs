@@ -8,26 +8,21 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TupleSections #-}
 
-
-
 module Contracts.Safe.NewMoney where
-
 
 import Contracts.Safe.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
 data RaiseDecision = Raise | DontRaise
-  deriving (Show,Eq,Ord)
+  deriving (Show, Eq, Ord)
 
 -- function to determine how much money to raise
 -- newMoneyDecision :: SafeInvestment -> z -> HowMuchToRaise
 -- newMoneyDecision investment z  = undefined
 
-
-
-
-newMoney name distribution payoffFunction = [opengame|
+newMoney name distribution =
+  [opengame|
   inputs    : investment, performanceAtT1;
   feedback  : ;
 
@@ -37,7 +32,7 @@ newMoney name distribution payoffFunction = [opengame|
   feedback  : ;
   operation : dependentDecision name (const [Raise,DontRaise]);
   outputs   : howMuchToRaise ;
-  returns   : payoffFunction newInvestment companyShares exitPayoff;
+  returns   : newInvestment companyShares exitPayoff;
 
   :----------------------------:
 

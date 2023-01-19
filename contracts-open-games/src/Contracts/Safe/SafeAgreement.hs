@@ -12,9 +12,9 @@
 ------------------------------------------------------------------------------
 module Contracts.Safe.SafeAgreement where
 
+import Contracts.Safe.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
-
 
 ---------------
 -- 0 Data types
@@ -22,6 +22,8 @@ import OpenGames.Preprocessor
 -- Actions: cap is set to a certain percentage, then the investor and company can choose to settle or not settle
 ---------------
 data SafeMove = Settle | DontSettle deriving (Eq, Ord, Show)
+
+SafeInvestment safeInvestment
 
 y :: Stochastic Double
 y = distFromList [(0.0, 0.5), (100000.0, 0.2), (1000000.0, 0.2), (10000000.0, 0.008), (100000000.0, 0.0019999), (1000000000.0, 0.0000001)]
@@ -94,20 +96,20 @@ safeAgreement2 distribution =
    inputs    :   quality, performanceAtT0   ;
    feedback  :      ;
    operation : dependentDecision "Investor" (const [Settle,DontSettle]);
-   outputs   : decisionInvestor ;
+   outputs   : decisionInvestor, safeInvestment ;
    returns   : safeAgreementMatrix decisionInvestor decisionCompany performanceAtT0;
 
    :----------------------------:
 
-   outputs   :      ;
-   returns   :      ;
+   outputs   : safeInvestment     ;
+   returns   : StockValPair, CashOut     ;
   |]
 
 --------------------------
 -- 3 Equilibrium analysis
 
 {--
-    
+
 isEquilibriumSafeAgreement strat x = generateIsEq $ evaluate (safeAgreement x) strat void
 
 -- | Define pure single player strategies
