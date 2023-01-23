@@ -36,8 +36,10 @@ library
       Contracts.Insurance
       Contracts.Liability
       Contracts.Payments.Payments
+      Contracts.Safe.CapTableToStock
       Contracts.Safe.Conversion
       Contracts.Safe.EquityFinancing
+      Contracts.Safe.Exit
       Contracts.Safe.ExitDecision
       Contracts.Safe.NewMoney
       Contracts.Safe.SafeAgreement

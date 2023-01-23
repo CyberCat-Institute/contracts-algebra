@@ -1,4 +1,4 @@
-module contracts-open-games.src.Contracts.Safe.Exit where
+module Contracts.Safe.Exit where
 
 import Contracts.Safe.Types
 import Engine.Engine
@@ -13,7 +13,7 @@ exitMatrix IPO x = (^) x 2 -- x^2 for exponential gains as the public company gr
 exitMatrix Merger x = ((**) (x * 0.3) 2) + 60000 -- decaying reward over time due to the instant nature of a merger
 exitMatrix Dissolution x = 0 * x -- Everyone loses in a dissolution
 
-exitDecision ExitType valuation=
+exitDecision exitType valuation=
   [opengame|
         inputs    : CapTable;
         feedback  : ;
@@ -22,12 +22,12 @@ exitDecision ExitType valuation=
 
         inputs    : CapTable;
         feedback  : ;
-        operation : forwardFunction exitMatrix ExitType valuation;
-        outputs   : [StockValPair] ;
+        operation : forwardFunction exitMatrix exitType valuation;
+        outputs   : valueCompany ;
         returns   : ;
 
         :----------------------------:
 
-        outputs   : [StockValPair];
+        outputs   : valueCompany;
         returns   : ;
     |]
