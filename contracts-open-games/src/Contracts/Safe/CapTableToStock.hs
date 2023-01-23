@@ -14,23 +14,22 @@ import Contracts.Safe.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
-capConversion :: _
 
-capTableToStock CapTable valuation =
+capTableToStock  capConversion=
   [opengame|
-        inputs    : CapTable,valuation;
+        inputs    : capTable,valuation;
         feedback  : ;
 
         :----------------------------:
 
-        inputs    : investment,valuation;
+        inputs    : capTable,valuation;
         feedback  : ;
         operation : forwardFunction capConversion;
-        outputs   : StockValPair ;
+        outputs   : stockValPair ;
         returns   : ;
 
         :----------------------------:
 
-        outputs   : StockValPair;
+        outputs   : stockValPair;
         returns   : ;
     |]

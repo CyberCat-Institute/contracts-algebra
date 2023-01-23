@@ -26,19 +26,20 @@ equityFinancing name undefinedDecisionSpace =
         :----------------------------:
         inputs    :      ;
         feedback  :      ;
-        operation : dependentDecision name (const [Reinvest, DontReinvest]);;
-        outputs   : SAFEReinvest;
-        returns   : ;
+        operation : dependentDecision name (const [Reinvest, DontReinvest]);
+        outputs   : sAFEReinvest;
+        returns   : 0;
+        // FIXME Payoff above intentionally 0?
    
-        inputs    : howMuchToRaise,valuation,performanceAtT1,Reinvest;
+        inputs    : howMuchToRaise,valuation,performanceAtT1,sAFEReinvest;
         feedback  : ;
         operation : dependentDecision name (const undefinedDecisionSpace);
         // TODO replace by adequate game among investors and other players
-        outputs   : CapTable, SeriesValuation;
+        outputs   : capTable, seriesValuation;
         returns   : exitPayoff;
 
         :----------------------------:
 
-        outputs   : CapTable, SeriesValuation;
+        outputs   : capTable, seriesValuation;
         returns   : exitPayoff;
     |]

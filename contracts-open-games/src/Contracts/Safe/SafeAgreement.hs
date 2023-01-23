@@ -21,9 +21,8 @@ import OpenGames.Preprocessor
 -- Players: Investor, Company
 -- Actions: cap is set to a certain percentage, then the investor and company can choose to settle or not settle
 ---------------
-data SafeMove = Settle | DontSettle deriving (Eq, Ord, Show)
 
-SafeInvestment safeInvestment
+--SafeInvestment safeInvestment
 
 y :: Stochastic Double
 y = distFromList [(0.0, 0.5), (100000.0, 0.2), (1000000.0, 0.2), (10000000.0, 0.008), (100000000.0, 0.0019999), (1000000000.0, 0.0000001)]
@@ -74,7 +73,7 @@ safeAgreement x =
   |]
 
 -- Safe agreement 2: No x variable for valuation; endogenous valuation
-safeAgreement2 distribution =
+safeAgreement2 distribution actionSpaceInvestment =
   [opengame|
 
    inputs    : quality   ;
@@ -96,13 +95,21 @@ safeAgreement2 distribution =
    inputs    :   quality, performanceAtT0   ;
    feedback  :      ;
    operation : dependentDecision "Investor" (const [Settle,DontSettle]);
-   outputs   : decisionInvestor, safeInvestment ;
+   outputs   : decisionInvestor ;
    returns   : safeAgreementMatrix decisionInvestor decisionCompany performanceAtT0;
+
+   inputs    :   quality, performanceAtT0, decisionInvestor   ;
+   feedback  :      ;
+   operation : dependentDecision "Investor" actionSpaceInvestment ;
+   outputs   : decisionInvestment ;
+   returns   : safeAgreementMatrix decisionInvestor decisionCompany performanceAtT0;
+  //  Needs to be checked again
+
 
    :----------------------------:
 
-   outputs   : safeInvestment     ;
-   returns   : StockValPair, CashOut     ;
+   outputs   : decisionInvestment     ;
+   returns   : stockValPair, cashOut     ;
   |]
 
 --------------------------
