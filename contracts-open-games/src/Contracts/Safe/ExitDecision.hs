@@ -8,7 +8,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TupleSections #-}
 
-
 module Contracts.Safe.ExitDecision where
 
 import Contracts.Safe.Types
@@ -19,29 +18,30 @@ import OpenGames.Preprocessor
 data ExitDecisionMatrix = Exit | Stay deriving (Show, Eq, Ord)
 
 -- function to determine if the SAFE Investor will be backing out of the deal
-safeExitDecision :: SeriesInvestment -> SeriesValuation -> CapTable -> CashOut -> CapTable -> ExitDecisionMatrix
+safeExitDecision :: CapTable -> ExitDecisionMatrix
 safeExitDecision = undefined
--- FIXME Is this supposed to be a function or a decision?
+
+-- FIXME Is this supposed to be a function or a decision [decision]?
 -- FIXME This whole module does not make sense
 -- FIXME Is this function supposed to compute the decision; if so why are there then several outputs below?
 {-
 exitDecision = [opengame|
 
-        inputs    : investment,valuation,capTable ;
+        inputs    : capTable ;
         feedback  : ;
 
         :----------------------------:
 
-        inputs    : investment,valuation,capTable;
+        inputs    : capTable;
         feedback  : ;
-        operation : dependentDecision "investor" (const [Exit,Stay]);
-        outputs   : capTableNew, cashOut ;
-        returns   : 0 ;
+        operation : dependentDecision "Investor" (const [Exit,Stay]);
+        outputs   : ExitDecisionMatrix, CashOut ;
+        returns   : ;
         // TODO check payoffs
 
         :----------------------------:
 
-        outputs   : capTableNew, cashOut;
+        outputs   : capTableNew, CashOut;
         returns   : ;
     |]
 --}

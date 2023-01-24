@@ -14,25 +14,25 @@ import Contracts.Safe.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
-equityConversion :: SafeInvestment -> SeriesValuation -> StockValPair -> CapTable
-equityConversion investment valuation stockValuePair = undefined
+equityConversion :: CapTable -> SafeInvestment -> SeriesValuation -> CapTable
+
 -- FIXME Above function does not match with used parameters belo9;32Mw
 
-conversion undefinedParameter  =
+conversion CapTable =
   [opengame|
-        inputs    : investment,valuation;
+        inputs    : investment,valuation,CapTable;
         feedback  : ;
 
         :----------------------------:
 
         inputs    : investment,valuation;
         feedback  : ;
-        operation : forwardFunction $ uncurry $  equityConversion undefinedParameter;
-        outputs   : capTable ;
+        operation : forwardFunction $ uncurry $  equityConversion CapTable investment valuation;
+        outputs   : CapTableNew ;
         returns   : ;
 
         :----------------------------:
 
-        outputs   : capTable;
+        outputs   : CapTableNew;
         returns   : ;
     |]

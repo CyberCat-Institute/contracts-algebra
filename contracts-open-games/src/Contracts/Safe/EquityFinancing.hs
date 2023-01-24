@@ -27,8 +27,8 @@ equityFinancing name undefinedDecisionSpace =
         inputs    :      ;
         feedback  :      ;
         operation : dependentDecision name (const [Reinvest, DontReinvest]);
-        outputs   : sAFEReinvest;
-        returns   : 0;
+        outputs   : SAFEReinvest;
+        returns   : ;
         // FIXME Payoff above intentionally 0?
    
         inputs    : howMuchToRaise,valuation,performanceAtT1,sAFEReinvest;
