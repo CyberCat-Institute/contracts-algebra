@@ -14,6 +14,8 @@ import Contracts.Safe.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
+import qualified Data.Map.Strict as M
+
 -- exit or no?
 data ExitType = IPO | Merger | Dissolution deriving (Show, Eq, Ord)
 
@@ -24,23 +26,33 @@ exitMatrix Merger x = ((**) (x * 0.3) 2) + 60000 -- decaying reward over time du
 exitMatrix Dissolution x = 0 * x -- Everyone loses in a dissolution
 -- FIXME the exitmatrix function above has two inputs; below it is used with three inputs
 
-{--
+
+computeValueForStakeHolders :: CapTable -> CashOut -> CashOutMap
+computeValueForStakeHolders capTable valuation =
+  M.map (\share -> share * valuation) capTable
+
 exitDecision exitType valuation=
   [opengame|
-        inputs    : capTable;
+        inputs    : valuation, capTable ;
         feedback  : ;
 
         :----------------------------:
 
-        inputs    : capTable;
+        inputs    : valuation ;
         feedback  : ;
-        operation : forwardFunction $ exitMatrix exitType valuation;
+        operation : forwardFunction $ exitMatrix exitType;
         outputs   : valueCompany ;
         returns   : ;
 
+        inputs    : capTable, valuation  ;
+        feedback  : ;
+        operation : forwardFunction $ uncurry computeValueForStakeHolders;
+        outputs   : cashOutMap ;
+        returns   : ;
+
+
         :----------------------------:
 
-        outputs   : valueCompany;
+        outputs   : cashOutMap ;
         returns   : ;
     |]
--}

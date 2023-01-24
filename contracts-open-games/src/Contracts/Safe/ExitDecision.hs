@@ -11,37 +11,57 @@
 module Contracts.Safe.ExitDecision where
 
 import Contracts.Safe.Types
+import qualified Data.Map.Strict as M
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
+import GHC.Base (undefined)
 
--- exit or no?
-data ExitDecisionMatrix = Exit | Stay deriving (Show, Eq, Ord)
-
--- function to determine if the SAFE Investor will be backing out of the deal
-safeExitDecision :: CapTable -> ExitDecisionMatrix
-safeExitDecision = undefined
-
--- FIXME Is this supposed to be a function or a decision [decision]?
--- FIXME This whole module does not make sense
--- FIXME Is this function supposed to compute the decision; if so why are there then several outputs below?
 {-
-exitDecision = [opengame|
+Exit decision
+-}
+-- function to determine if the SAFE Investor will be backing out of the deal
+-- TODO use a lens for the capTable?
+safeExitDecision :: String -> CapTable -> ExitDecisionMatrix -> (Double,CapTable)
+safeExitDecision  name capTable decision =
+  case decision of
+    Exit -> (value, M.delete name capTable)
+    Stay -> (0, capTable)
+  where
+    value = capTable M.! name
 
-        inputs    : capTable ;
+
+multiply = (*)
+
+exitDecision name = [opengame|
+
+        inputs    : capTableOld, valuation ;
         feedback  : ;
 
         :----------------------------:
 
-        inputs    : capTable;
+        inputs    : capTableOld ;
         feedback  : ;
-        operation : dependentDecision "Investor" (const [Exit,Stay]);
-        outputs   : ExitDecisionMatrix, CashOut ;
-        returns   : ;
+        operation : dependentDecision name (const [Exit,Stay]);
+        outputs   : exitDecision ;
+        returns   : value ;
         // TODO check payoffs
 
+        inputs    : capTableOld, exitDecision ;
+        feedback  : ;
+        operation : forwardFunction $ uncurry $ safeExitDecision name ;
+        outputs   : (share,capTableNew) ;
+        returns   :  ;
+
+        inputs    : share, valuation ;
+        feedback  : ;
+        operation : forwardFunction $ uncurry multiply ;
+        outputs   : value ;
+        returns   :  ;
+
+
+
         :----------------------------:
 
-        outputs   : capTableNew, CashOut;
+        outputs   : capTableNew ;
         returns   : ;
     |]
---}

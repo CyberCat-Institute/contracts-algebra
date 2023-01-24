@@ -15,9 +15,10 @@ import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
 equityConversion :: CapTable -> SafeInvestment -> SeriesValuation -> CapTable
-
+equityConversion captTable safeInvestment seriesValuation = undefined
 -- FIXME Above function does not match with used parameters belo9;32Mw
 
+{-
 conversion CapTable =
   [opengame|
         inputs    : investment,valuation,CapTable;
@@ -36,3 +37,4 @@ conversion CapTable =
         outputs   : CapTableNew;
         returns   : ;
     |]
+-}

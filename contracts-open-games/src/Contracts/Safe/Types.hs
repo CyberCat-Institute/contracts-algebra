@@ -1,7 +1,7 @@
 module Contracts.Safe.Types where
 
+import qualified Data.Map.Strict as M
 import OpenGames.Engine.Engine
-
 ---------------
 -- Data types
 -- Players: Investor, Company
@@ -31,7 +31,17 @@ type SeriesValuation = Int
 -- StockValPair = (number of shares, value of share)
 type StockValPair = (Int, Int)
 
--- CapTable = [(company name, % ownership of shares)]
-type CapTable = [(String, Int)]
 
-type CashOut = Int
+
+type CashOut = Double
+
+data ExitDecisionMatrix = Exit | Stay deriving (Show, Eq, Ord)
+
+-- CapTable = Map company name ->  % ownership of shares
+type CapTable = M.Map Name Double
+
+type CashOutMap = M.Map Name Double
+
+type Value = Double 
+
+type Name = String 

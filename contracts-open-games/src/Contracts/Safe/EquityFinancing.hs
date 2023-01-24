@@ -17,7 +17,7 @@ import OpenGames.Preprocessor
 data SAFEReinvest = Reinvest | DontReinvest deriving (Show, Eq, Ord)
 
 -- pricedRound :: HowMuchToRaise -> z -> SeriesInvestment -> SeriesValuation -> Reinvest
-
+{-
 equityFinancing name undefinedDecisionSpace =
   [opengame|
         inputs    : howMuchToRaise,valuation,performanceAtT1 ;
@@ -43,3 +43,5 @@ equityFinancing name undefinedDecisionSpace =
         outputs   : capTable, seriesValuation;
         returns   : exitPayoff;
     |]
+
+--}

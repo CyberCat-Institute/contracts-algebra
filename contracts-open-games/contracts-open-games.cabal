@@ -61,6 +61,7 @@ library
   build-depends:
       base >=4.7 && <5
     , comonad
+    , containers
     , criterion
     , extra
     , fgl
@@ -91,6 +92,7 @@ executable contracts-open-games-exe
   build-depends:
       base >=4.7 && <5
     , comonad
+    , containers
     , contracts-open-games
     , criterion
     , extra
@@ -124,6 +126,7 @@ test-suite equilibrium-test
       QuickCheck
     , base
     , comonad
+    , containers
     , contracts-open-games
     , criterion
     , extra
