@@ -14,8 +14,7 @@ import Contracts.Safe.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
-
-capTableToStock  capConversion=
+capTableToStock capConversion =
   [opengame|
         inputs    : capTable,valuation;
         feedback  : ;
