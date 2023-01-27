@@ -12,12 +12,13 @@ module Contracts.Safe.EquityFinancing where
 
 import Contracts.Safe.Types
 import OpenGames.Engine.Engine
+import OpenGames.Examples.Auctions.AuctionSupportFunctions
 import OpenGames.Preprocessor
 
 data SAFEReinvest = Reinvest | DontReinvest deriving (Show, Eq, Ord)
 
 -- pricedRound :: HowMuchToRaise -> z -> SeriesInvestment -> SeriesValuation -> Reinvest
-{-
+
 equityFinancing name undefinedDecisionSpace =
   [opengame|
         inputs    : howMuchToRaise,valuation,performanceAtT1 ;
@@ -43,5 +44,3 @@ equityFinancing name undefinedDecisionSpace =
         outputs   : capTable, seriesValuation;
         returns   : exitPayoff;
     |]
-
---}
