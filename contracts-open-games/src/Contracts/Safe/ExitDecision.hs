@@ -11,28 +11,28 @@
 module Contracts.Safe.ExitDecision where
 
 import Contracts.Safe.Types
-import qualified Data.Map.Strict as M
+import Data.Map.Strict qualified as M
+import GHC.Base (undefined)
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
-import GHC.Base (undefined)
 
 {-
 Exit decision
 -}
 -- function to determine if the SAFE Investor will be backing out of the deal
 -- TODO use a lens for the capTable?
-safeExitDecision :: String -> CapTable -> ExitDecisionMatrix -> (Double,CapTable)
-safeExitDecision  name capTable decision =
+safeExitDecision :: String -> CapTable -> ExitDecisionMatrix -> (Double, CapTable)
+safeExitDecision name capTable decision =
   case decision of
     Exit -> (value, M.delete name capTable)
     Stay -> (0, capTable)
   where
     value = capTable M.! name
 
-
 multiply = (*)
 
-exitDecision name = [opengame|
+exitDecision name =
+  [opengame|
 
         inputs    : capTableOld, valuation ;
         feedback  : ;
