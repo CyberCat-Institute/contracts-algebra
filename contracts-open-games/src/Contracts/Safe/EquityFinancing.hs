@@ -12,13 +12,16 @@ module Contracts.Safe.EquityFinancing where
 
 import Contracts.Safe.Types
 import OpenGames.Engine.Engine
-import OpenGames.Examples.Auctions.AuctionSupportFunctions
+import Examples.Auctions.AuctionSupportFunctions
 import OpenGames.Preprocessor
+import GHC.Base (undefined)
 
--- data SAFEReinvest = Reinvest | DontReinvest deriving (Show, Eq, Ord)
+data SAFEReinvest = Reinvest | DontReinvest deriving (Show, Eq, Ord)
 
 -- pricedRound :: HowMuchToRaise -> z -> SeriesInvestment -> SeriesValuation -> Reinvest
 
+values = undefined
+reservePrice = undefined
 
 -- Draws a value and creates a pair of _value_ _name_
 natureDrawsTypeStage name = [opengame|
@@ -79,7 +82,7 @@ transformPayments kPrice kSlots noLotteries paymentFunction = [opengame|
    returns   :      ;
   |]
 
-  bidding kPrice kSlots noLotteries paymentFunction = [opengame| 
+bidding kPrice kSlots noLotteries paymentFunction = [opengame| 
 
    inputs    :      ;
    feedback  :      ;
@@ -88,40 +91,40 @@ transformPayments kPrice kSlots noLotteries paymentFunction = [opengame|
    inputs    :      ;
    feedback  :      ;
    operation : natureDrawsTypeStage "VC1" ;
-   outputs   :  VC1Value ;
+   outputs   :  vc1Value ;
    returns   :      ;
 
    inputs    :      ;
    feedback  :      ;
    operation : natureDrawsTypeStage "VC2" ;
-   outputs   :  VC2Value ;
+   outputs   :  vc2Value ;
    returns   :      ;
 
    inputs    :      ;
    feedback  :      ;
    operation : natureDrawsTypeStage "VC3" ;
-   outputs   :  VC3Value ;
+   outputs   :  vc3Value ;
    returns   :      ;
 
-   inputs    :  VC1Value    ;
+   inputs    :  vc1Value    ;
    feedback  :      ;
    operation :  investorBid "VC1" ;
-   outputs   :  VC1Dec ;
+   outputs   :  vc1Dec ;
    returns   :  payments  ;
 
-   inputs    :  VC2Value    ;
+   inputs    :  vc2Value    ;
    feedback  :      ;
    operation :  investorBid "VC2" ;
-   outputs   :  VC2Dec ;
+   outputs   :  vc2Dec ;
    returns   :  payments  ;
 
-   inputs    :  VC3Value    ;
+   inputs    :  vc3Value    ;
    feedback  :      ;
    operation :  investorBid "VC3" ;
-   outputs   :  VC3Dec ;
+   outputs   :  vc3Dec ;
    returns   :  payments  ;
 
-   inputs    :  [("VC1",VC1Dec),("VC2",VC2Dec),("VC3",VC3Dec)]  ;
+   inputs    :  [("VC1",vc1Dec),("VC2",vc2Dec),("VC3",vc3Dec)]  ;
    feedback  :      ;
    operation :   transformPayments kPrice kSlots noLotteries paymentFunction ;
    outputs   :  payments ;
@@ -132,6 +135,7 @@ transformPayments kPrice kSlots noLotteries paymentFunction = [opengame|
    returns   :      ;
    |]
 
+{-
 equityFinancing name howMuchToRaise valuation payments=
   [opengame|
         inputs    : howMuchToRaise,valuation,payments ;
@@ -141,12 +145,13 @@ equityFinancing name howMuchToRaise valuation payments=
         inputs    :      ;
         feedback  :      ;
         operation : dependentDecision name (const [Reinvest, DontReinvest]);
-        outputs   : SAFEReinvest;
+        outputs   : safeReinvest;
         returns   : ;
         // Adds SAFE investor to the new valuation if they decide to reinvest. Since they're already investors, they don't participate in the auction
-        inputs    : howMuchToRaise,valuation,SAFEReinvest,payments;
+        inputs    : howMuchToRaise,valuation,safeReinvest,payments;
         feedback  : ;
-        operation : //TODO: create a function that uses the auction and post-money valuation to return a CapTable and a valuation;
+        operation : undefined ;
+        //TODO: create a function that uses the auction and post-money valuation to return a CapTable and a valuation;
         outputs   : capTable, seriesValuation;
         returns   : exitPayoff;
 
@@ -155,3 +160,4 @@ equityFinancing name howMuchToRaise valuation payments=
         outputs   : capTable, seriesValuation;
         returns   : exitPayoff;
     |]
+--}

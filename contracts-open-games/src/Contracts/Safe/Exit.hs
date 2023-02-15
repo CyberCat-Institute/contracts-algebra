@@ -11,46 +11,52 @@
 module Contracts.Safe.Exit where
 
 import Contracts.Safe.Types
-import Data.Map.Strict qualified as M
+import qualified Data.Map.Strict  as M
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
 -- exit or no?
 data ExitType = IPO | Merger | Dissolution deriving (Show, Eq, Ord)
 
--- | Payoff matrix for player i given i's action and j's action
-exitMatrix :: ExitType -> Double -> Double
-exitMatrix IPO x = (^) x 2 -- x^2 for exponential gains as the public company grows more investors and returns over time
-exitMatrix Merger x = ((**) (x * 0.3), 2) + 60000 -- decaying reward over time due to the instant nature of a merger
-exitMatrix Dissolution x = 0 * x -- Everyone loses in a dissolution
+-- | Determines the overall company evaluation
+exitValue :: ExitType -> Double -> Double
+exitValue IPO x =  x ** 2 -- x^2 for exponential gains as the public company grows more investors and returns over time
+exitValue Merger x = (x * 0.3) ** 2 + 60000 -- decaying reward over time due to the instant nature of a merger
+exitValue Dissolution _ = 0 -- Everyone loses in a dissolution
 -- FIXME the exitmatrix function above has two inputs; below it is used with three inputs
 
+-- | Computes the value for each stakeholder according to the cap-table
 computeValueForStakeHolders :: CapTable -> CashOut -> CashOutMap
 computeValueForStakeHolders capTable valuation =
   M.map (\share -> share * valuation) capTable
 
-exitDecision exitType valuation =
+-- | Game which determines the value for each investor at exit
+exitOutcome  =
   [opengame|
-        inputs    : valuation, capTable ;
+        inputs    : exitType, valuation, capTable;
         feedback  : ;
 
         :----------------------------:
 
-        inputs    : valuation ;
+        inputs    : exitType, valuation  ;
         feedback  : ;
-        operation : forwardFunction $ exitMatrix exitType;
+        operation : forwardFunction $ uncurry exitValue ;
         outputs   : valueCompany ;
         returns   : ;
+        // Produces the overall company value
 
-        inputs    : capTable, valuation  ;
+        inputs    : capTable, valueCompany  ;
         feedback  : ;
         operation : forwardFunction $ uncurry computeValueForStakeHolders;
         outputs   : cashOutMap ;
         returns   : ;
-
+        // Produces the value for each investor
 
         :----------------------------:
 
         outputs   : cashOutMap ;
         returns   : ;
     |]
+
+
+-- TODO: There should be another interface where the value is determined 

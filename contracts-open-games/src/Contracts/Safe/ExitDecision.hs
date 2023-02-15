@@ -11,7 +11,7 @@
 module Contracts.Safe.ExitDecision where
 
 import Contracts.Safe.Types
-import Data.Map.Strict qualified as M
+import qualified Data.Map.Strict as M
 import GHC.Base (undefined)
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
