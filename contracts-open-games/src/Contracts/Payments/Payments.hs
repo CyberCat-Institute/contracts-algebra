@@ -6,12 +6,14 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE QuasiQuotes #-}
 
-module Contracts.Payments where
+module Contracts.Payments.Payments where
 
-import Engine.Engine
-import Preprocessor.Preprocessor
+import OpenGames.Engine.Engine
+import OpenGames.Preprocessor
 
 -- Payment clauses
+-- This module describes a game where expenses are charged by different parties
+-- It also describes a simple module which determines punishment in case of late payments
 
 
 ---------------
@@ -31,7 +33,15 @@ data Parameter = Parameter
    , highExpenses :: Double
    }
 
+type Price = Double
+
+type Days  = Int
+
+type Interest = Double
+
 parameters = Parameter 1 8 10 0.7 0.2 4 10
+
+
 
 ------------
 -- 1 Payoffs
@@ -56,9 +66,90 @@ expensesDistribution lowExpenses highExpenses p = distFromList [(lowExpenses,p),
 
 -- non decision
 nonDecision = [1]
+
+-- Payment interest
+paymentLate :: Interest -> Price -> Days -> Price
+paymentLate interest price delayedDays =
+  price*interest* (fromIntegral delayedDays) 
+
+
+
 --------------------
--- 3 Building Blocks
+-- 3 Payment clauses
 --------------------
+-- | Payment module in case of late payments
+paymentSettlement seller buyer interestRate = [opengame|
+
+    inputs    : price, daysLate ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : price, daysLate ;
+    feedback  : ;
+    operation : forwardFunction $ uncurry $ paymentLate interestRate;
+    outputs   : penalty ;
+    returns   : ;
+
+
+    inputs    : penalty;
+    feedback  : ;
+    operation : addPayoffs seller ;
+    outputs   :  ;
+    returns   : ;
+
+
+    inputs    : -penalty ;
+    feedback  : ;
+    operation : addPayoffs buyer ;
+    outputs   :  ;
+    returns   :  ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+|]
+
+-- | Payment module in case of late payments
+paymentSettlementEndogenousRoles  interestRate = [opengame|
+
+    inputs    : price, daysLate, seller, buyer ;
+    feedback  : ;
+
+    :-----:
+
+    inputs    : price, daysLate ;
+    feedback  : ;
+    operation : forwardFunction $ uncurry $ paymentLate interestRate;
+    outputs   : penalty ;
+    returns   : ;
+
+
+    inputs    : seller,penalty;
+    feedback  : ;
+    operation : addRolePayoffs ;
+    outputs   :  ;
+    returns   : ;
+
+
+    inputs    : buyer, -penalty ;
+    feedback  : ;
+    operation : addRolePayoffs ;
+    outputs   :  ;
+    returns   :  ;
+
+    :-----:
+
+    outputs   : ;
+    returns   : ;
+|]
+
+
+-------------------
+-- 4 Expense models
+-------------------
+-- This module describes a specific use case where the amount of expenses are affects by actions of the players involved
 
 -- | Expenses are generated depending on exogenous parameters and the level of diligence exercised
 expenseFunction p delta lowExpenses highExpenses = [opengame|
@@ -174,95 +265,4 @@ clientPayment par = [opengame|
 |]
 
 
---------------------
--- 4 Strategies
---------------------
 
-strategyLowDiligence, strategyHighDiligence :: List '[Kleisli Stochastic () Diligence, Kleisli Stochastic Double Integer]
-strategyLowDiligence = pureAction Low ::- pureAction 1 ::-  Nil
-strategyHighDiligence = pureAction High ::- pureAction 1 ::- Nil
-
-eqCapPayment strat = generateIsEq $  evaluate (capPayment parameters) strat void
-
-eqClientPayment strat = generateIsEq $  evaluate (clientPayment parameters) strat void
-
-
-{--
--- If the provider pays for the problems, he internalizes the costs
--- Not an equilibrium given the stochastic nature of the process
-eqCapPayment strategyLowDiligence
-
->>>>> Output
-----Analytics begin----
- Strategies are NOT in equilibrium. Consider the following profitable deviations:
-
-Player: provider
-Optimal Move: High
-Current Strategy: fromFreqs [(Low,1.0)]
-Optimal Payoff: -6.800000000000001
-Current Payoff: -7.0
-Observable State: ()
-Unobservable State: "(((),()),())"
- --other game--
- --No more information--
- NEWGAME:
-
- Strategies are in equilibrium
- NEWGAME:
-----Analytics end---
-<<<<<<<<<<<<<
-
--- Eq
-eqCapPayment strategyHighDiligence
-
->>>> Output
-
-----Analytics begin----
- Strategies are in equilibrium
- NEWGAME:
-
- Strategies are in equilibrium
- NEWGAME:
-----Analytics end----
-
-<<<<<<<<<<<
-
--- If the client pays for the expenses, the provider has no incentive act diligently
-
--- Not an eq.
-eqClientPayment strategyHighDiligence
-
->>>>>> Output
-----Analytics begin----
- Strategies are NOT in equilibrium. Consider the following profitable deviations:
-
-Player: provider
-Optimal Move: Low
-Current Strategy: fromFreqs [(High,1.0)]
-Optimal Payoff: 0.0
-Current Payoff: -1.0
-Observable State: ()
-Unobservable State: "(((),()),())"
- --other game--
- --No more information--
- NEWGAME:
-
- Strategies are in equilibrium
- NEWGAME:
-----Analytics end---
-<<<<<<<<<<<<<<<
-
--- Eq.
-eqClientPayment strategyLowDiligence
->>>>>> Output
-----Analytics begin----
- Strategies are in equilibrium
- NEWGAME:
-
- Strategies are in equilibrium
- NEWGAME:
-----Analytics end----
-
-----Analytics end---
-<<<<<<<<<<<<<<<
--}

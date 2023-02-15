@@ -11,7 +11,7 @@
 # resolver: lts-3.5
 # resolver: nightly-2015-09-21
 # resolver: ghc-7.10.2
-resolver: lts-16.28
+resolver: lts-20.4
 
 #
 # The location of a snapshot can be provided as a file or url. Stack assumes
@@ -43,14 +43,9 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 extra-deps:
-  - git: https://github.com/philipp-zahn/open-games-hs.git
-    commit: 34ff3e68348e633c3d0c70c0c4816e41448236a9
-  - probability-0.2.7@sha256:3e9fe130af3bd75e791e1add902eb2caab170cc95373281c0a9626b01fc3b104,2869
-  - random-1.2.0
-  - splitmix-0.1
-  - mwc-random-0.15.0.2
+ - git: https://github.com/philipp-zahn/open-games-engine.git
+   commit: d1d6f4f7a87234d61a961c00d4f740ab564408d2
 
-allow-newer: true
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

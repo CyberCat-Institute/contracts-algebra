@@ -3,7 +3,7 @@ version:             0.1.0.0
 github:              "philipp-zahn/contracts-open-games"
 license:             BSD3
 author:              "Philipp Zahn"
-maintainer:          "philipp.zahn@protonmail.com"
+maintainer:          "philipp.m.zahn@gmail.com"
 copyright:           "Philipp Zahn"
 
 extra-source-files:
@@ -40,6 +40,7 @@ dependencies:
   - typed-process
   - criterion
   - random
+  - containers
 
 
 
