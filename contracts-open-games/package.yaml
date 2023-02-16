@@ -46,9 +46,6 @@ dependencies:
 
 library:
   source-dirs: src
-  exposed-modules:
-    - Contracts.Subcontracting
-
 
 executables:
   contracts-open-games-exe:

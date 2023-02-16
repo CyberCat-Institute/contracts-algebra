@@ -25,16 +25,11 @@ source-repository head
 
 library
   exposed-modules:
-      Contracts.Subcontracting
-  other-modules:
       Analysis.AuxiliaryFunctions
       Analysis.ShipmentAndDelivery
       Analysis.Warranty
       Contracts.ComposedClauses.ComposedClauses
       Contracts.ComposedClauses.SalesOfGoods
-      Contracts.ForceMajeur
-      Contracts.Insurance
-      Contracts.Liability
       Contracts.Payments.Payments
       Contracts.Safe.CapTableToStock
       Contracts.Safe.Conversion
@@ -50,11 +45,10 @@ library
       Contracts.ShipmentAndDelivery.RiskOfLossClauses
       Contracts.ShipmentAndDelivery.ShipmentLocationClauses
       Contracts.ShipmentAndDelivery.Types
-      Contracts.Termination
       Contracts.Types
-      Contracts.Warranty
       Contracts.Warranty.Clauses
       Contracts.Warranty.Types
+  other-modules:
       Paths_contracts_open_games
   hs-source-dirs:
       src
