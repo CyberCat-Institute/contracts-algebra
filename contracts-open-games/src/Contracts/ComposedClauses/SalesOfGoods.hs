@@ -15,7 +15,7 @@ import Contracts.ForceMajeur (forceMajeurClause)
 import Contracts.Insurance (insuranceClause)
 import Contracts.Payments.Payments (paymentSettlement)
 import Contracts.ShipmentAndDelivery.Export
-import Contracts.Termination ()
+import Contracts.Termination.Clauses ()
 import Contracts.Warranty.Clauses (warrantyCosts)
 
 import OpenGames.Engine.Engine
