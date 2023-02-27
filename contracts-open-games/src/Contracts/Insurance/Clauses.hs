@@ -22,10 +22,9 @@ import Contracts.Types
 data Insuree = Seller | Buyer | Both
   deriving (Show,Eq,Ord)
 
-type InsuranceTime = Int
-type Time = Int
+type InsuranceDate = Int
 
-favorability :: (Insuree, SellerCosts, BuyerCosts, InsuranceTime, Time) -> (SellerCosts,BuyerCosts)
+favorability :: (Insuree, SellerCosts, BuyerCosts, InsuranceDate, CurrentDate) -> (SellerCosts,BuyerCosts)
 favorability (insuree,costsSeller,costsBuyer,deadline,time)
  | insuree == Seller && time < deadline = (costsSeller,0)
  | insuree == Buyer && time < deadline = (0,costsBuyer)

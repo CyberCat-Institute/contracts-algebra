@@ -12,7 +12,7 @@
 module Contracts.ComposedClauses.SalesOfGoods where
 
 import Contracts.ForceMajeur (forceMajeurClause)
-import Contracts.Insurance (insuranceClause)
+import Contracts.Insurance.Clauses
 import Contracts.Payments.Payments (paymentSettlement)
 import Contracts.ShipmentAndDelivery.Export
 import Contracts.Termination.Clauses ()

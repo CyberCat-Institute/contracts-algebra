@@ -8,8 +8,10 @@
 
 module Contracts.Termination.Clauses where
 
+import Contracts.Types
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
+
 
 import Data.Tuple.Extra (uncurry3)
 import Data.Bool (Bool(True))
@@ -19,9 +21,6 @@ import Data.Bool (Bool(True))
 -------------------------------------
 -- 0 Data types + auxiliary functions
 -------------------------------------
-
-data TerminateContract = Continue | Terminate
-  deriving (Show, Eq, Ord)
 
 data ContractBreach = ContractBreachYes | ContractBreachNo
   deriving (Show, Eq, Ord)
@@ -43,8 +42,6 @@ type TerminationDeadline = Int
 type CurationDeadline = Int
 
 type PaymentDeadline = Int
-
-type CurrentDate = Int
 
 terminateContract :: TerminateContract -> TerminateContract -> TerminateContract
 terminateContract Terminate _         = Terminate
