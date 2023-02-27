@@ -11,27 +11,34 @@
 
 module Contracts.ComposedClauses.SalesOfGoods where
 
-import Contracts.ForceMajeur (forceMajeurClause)
+import Contracts.ForceMajeur.Clauses (forceMajeurClause)
 import Contracts.Insurance.Clauses
 import Contracts.Payments.Payments (paymentSettlement)
 import Contracts.ShipmentAndDelivery.Export
-import Contracts.Termination.Clauses ()
+import Contracts.Termination.Clauses
+import Contracts.Types
 import Contracts.Warranty.Clauses (warrantyCosts)
 
 import OpenGames.Engine.Engine
 import OpenGames.Preprocessor
 
--- This module describes a composed model of the sales of good clauses
-
--- NOTE We do not include inspection clauses, liability, force majeur, and termination clauses in the first version of the contract here.
--- This needs to be modelled in a different fashion as these costs are contingent on things happening or on decisions in the course of the contract.
-
--- We give one example for the damage as modelled in an external fashion (NOTE the moral hazard version in the corresponding clause file)
 {-
--- | Sales of good contract
-salesOfGoods seller buyer interestRate costFunction probabilityDistribution damageFunction warrantyCostFunction insuranceCostFunction = [opengame|
+-- This module describes an example for a composed model of the sales of good clauses;
+-- It does not fully specify the whole contract but focuses on a subset of clauses
+-- NOTE that we provide different foci - ex ante as well as in the course of the contract
+-- NOTE that there are multiple ways in which these contracts could be used. There is a lot of space to be explored. We intentionally provide different viewpoints. 
+-- TODO there are probably still some inconsistencies how we include the different contracts
+-}
 
-    inputs    : price, daysLate, location, warranty, insuredSum, periodOfTimeInsurance ;
+
+----------
+-- Ex ante
+----------
+
+-- | Sales of good contract
+salesOfGoods seller buyer interestRate costFunction costs damageFunction mode probabilityDistribution warrantyCostFunction insuranceCostFunction  = [opengame|
+
+    inputs    : price, daysLate, location, warranty, insuranceCondition, amountSeller,amountBuyer, deadlineInsurance, timeOfInsurance ;
     feedback  : ;
 
     :-----:
@@ -50,19 +57,19 @@ salesOfGoods seller buyer interestRate costFunction probabilityDistribution dama
 
     inputs    : ;
     feedback  : ;
-    operation : riskOfLoss seller buyer probabilityDistribution damageFunction ;
-    outputs   : lossSeller,lossBuyer;
+    operation : riskOfLossExpectationExogenous seller buyer costs damageFunction mode probabilityDistribution ;
+    outputs   : costsLossSeller,costsLossBuyer;
     returns   : ;
 
     inputs    : warranty ;
     feedback  : ;
     operation : warrantyCosts seller buyer warrantyCostFunction ;
-    outputs   : ;
+    outputs   : costsWarrantySeller,costsWarrantyBuyer;
     returns   : ;
 
-    inputs    : insuredSum, periodOfTimeInsurance ;
+    inputs    : insuranceCondition, amountSeller,amountBuyer, deadlineInsurance, timeOfInsurance ;
     feedback  : ;
-    operation : insuranceClause seller buyer insuranceCostFunction;
+    operation : insuranceClause seller buyer insuranceCostFunction ;
     outputs   : ;
     returns   : ;
 
@@ -71,7 +78,7 @@ salesOfGoods seller buyer interestRate costFunction probabilityDistribution dama
     outputs   : ;
     returns   : ;
 
-\|]
+|]
 
 -----------------------------------
 -- Scenarios in the course of the
@@ -79,44 +86,44 @@ salesOfGoods seller buyer interestRate costFunction probabilityDistribution dama
 -----------------------------------
 
 -- | What if a force majeur happened?
-salesOfGoodsForceMajeur seller buyer interestRate costFunction probabilityDistribution damageFunction warrantyCostFunction insuranceCostFunction forceMajeurCostFunction = [opengame|
+salesOfGoodsForceMajeur seller buyer interestRate costFunction costs damageFunction mode probabilityDistribution warrantyCostFunction insuranceCostFunction = [opengame|
 
-    inputs    : price, daysLate, location, warranty, insuredSum, periodOfTimeInsurance, eventHappened ;
+    inputs    : price, daysLate, location, warranty, insuranceCondition, amountSeller, amountBuyer, deadlineInsurance, timeOfInsurance, eventHappened, forceMajeurCondition, deadlineForceMajeur, timeForceMajeur ;
     feedback  : ;
 
     :-----:
 
-    inputs    : price, daysLate, location, warranty, insuredSum, periodOfTimeInsurance ;
+    inputs    : price, daysLate, location, warranty, insuranceCondition, amountSeller,amountBuyer, deadlineInsurance, timeOfInsurance ;
     feedback  : ;
-    operation : salesOfGoods  seller buyer interestRate costFunction probabilityDistribution damageFunction warrantyCostFunction insuranceCostFunction;
+    operation : salesOfGoods  seller buyer interestRate costFunction costs damageFunction mode probabilityDistribution warrantyCostFunction insuranceCostFunction;
     outputs   : ;
     returns   : ;
 
-    inputs    : eventHappened ;
+    inputs    : eventHappened, forceMajeurCondition, deadlineForceMajeur, timeForceMajeur ;
     feedback  : ;
-    operation : forceMajeurClause seller buyer forceMajeurCostFunction ;
-    outputs   : ;
-    returns   : ;
+    operation : forceMajeurClause seller buyer  ;
+    outputs   : terminateContract;
+    returns   : costTerminationSeller,costTerminationBuyer;
 
     :-----:
 
     outputs   : ;
-    returns   : ;
+    returns   : costTerminationSeller,costTerminationBuyer;
 
-\|]
+|]
 
 -- | What if the inspection scenario kicks in?
 -- We consider this a strategic choice
-salesOfGoodsInspection seller buyer interestRate costFunction probabilityDistribution damageFunction warrantyCostFunction insuranceCostFunction inspectionCondition daysThreshold replacementCostFunction= [opengame|
+salesOfGoodsInspection seller buyer interestRate costFunction costs damageFunction mode probabilityDistribution warrantyCostFunction insuranceCostFunction inspectionCondition daysThreshold replacementCostFunction= [opengame|
 
-    inputs    : price, daysLate, location, warranty, insuredSum, periodOfTimeInsurance, daysSinceShipment ;
+    inputs    : price, daysLate, location, warranty, insuranceCondition, amountSeller,amountBuyer, deadlineInsurance, timeOfInsurance, daysSinceShipment ;
     feedback  : ;
 
     :-----:
 
-    inputs    : price, daysLate, location, warranty, insuredSum, periodOfTimeInsurance ;
+    inputs    : price, daysLate, location, warranty, insuranceCondition, amountSeller,amountBuyer, deadlineInsurance, timeOfInsurance ;
     feedback  : ;
-    operation : salesOfGoods  seller buyer interestRate costFunction probabilityDistribution damageFunction warrantyCostFunction insuranceCostFunction;
+    operation : salesOfGoods  seller buyer interestRate costFunction costs damageFunction mode probabilityDistribution warrantyCostFunction insuranceCostFunction;
     outputs   : ;
     returns   : ;
 
@@ -137,6 +144,5 @@ salesOfGoodsInspection seller buyer interestRate costFunction probabilityDistrib
     outputs   : ;
     returns   : ;
 
-\|]
+|]
 
---}

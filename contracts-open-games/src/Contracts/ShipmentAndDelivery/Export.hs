@@ -20,6 +20,7 @@ module Contracts.ShipmentAndDelivery.Export
   , riskOfLoss6
   , riskOfLoss7
   , riskOfLoss8
+  , riskOfLossExpectationExogenous
   , riskOfLossExpectationBuyer
   , riskOfLossExpectationSeller
   , shipmentCosts
